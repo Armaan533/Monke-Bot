@@ -49,6 +49,8 @@ async def on_member_join(member):
 		WelcomeEmbed = discord.Embed(description = f"Hey {member.mention},\nWelcome to Paradise!!\nWe hope you have a great stay in our server",
 									color = lgd.hexConvertor(mn.colorCollection.find({},{"_id":0,"Hex":1})))
 		channel = discord.utils.get(member.guild.text_channels,id = 967822342459904051)
+		ping = await channel.send(member.mention)
+		await ping.delete()
 		await channel.send(embed = WelcomeEmbed)
 		await member.add_roles(role)
 
