@@ -10,8 +10,8 @@ intent.members = True
 
 defaultPrefix = "+"
 
-def get_prefix(client, message):
-	Gprefix = mn.guildpref.find_one({"_id": str(message.guild.id)},{"_id": 0,"Prefix": 1})["Prefix"]
+def get_prefix(client, message: discord.Message):
+	Gprefix: str = mn.guildpref.find_one({"_id": str(message.guild.id)},{"_id": 0,"Prefix": 1})["Prefix"]
 	return commands.when_mentioned_or(Gprefix)(client, message)
 
 # Creating a bot instance
@@ -45,7 +45,7 @@ async def on_ready():
 @client.event
 async def on_member_join(member):
 	if member.guild.id == 965285949447753769:
-		role = discord.utils.get(member.guild.roles, name = "Members")
+		role = discord.utils.get(member.guild.roles, name = "Soul Reapers")
 		WelcomeEmbed = discord.Embed(description = f"Hey {member.mention},\nWelcome to Paradise!!\nWe hope you have a great stay in our server",
 									color = lgd.hexConvertor(mn.colorCollection.find({},{"_id":0,"Hex":1})))
 		channel = discord.utils.get(member.guild.text_channels,id = 967822342459904051)
