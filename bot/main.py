@@ -296,4 +296,4 @@ async def ban_error(ctx, error):
 
 client.load_extension("cogs.channel")
 
-client.run("ODYwMTYxMDIwNjgxMzg4MDkz.YN3NYA.9cNO4ybGTvF__2EqVMFVlBqGqxg")
+client.run()
