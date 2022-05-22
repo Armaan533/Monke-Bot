@@ -1,3 +1,4 @@
+from keep_alive import keep_alive
 import os
 import discord
 from discord.ext import commands
@@ -302,6 +303,7 @@ current = Path(os.getcwd())
 parentFiles = os.listdir(current.parent)
 
 if ".replit" in parentFiles:
+	keep_alive()
 	client.run(os.getenv('token'))
 else:
 	pass
