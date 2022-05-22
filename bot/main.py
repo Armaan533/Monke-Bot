@@ -3,6 +3,8 @@ import discord
 from discord.ext import commands
 import logical_definitions as lgd
 import mongo_declaration as mn
+from boto.s3.connection import S3Connection
+from pathlib import Path
 
 
 intent = discord.Intents.default()
@@ -296,4 +298,10 @@ async def ban_error(ctx, error):
 
 client.load_extension("cogs.channel")
 
-client.run()
+current = Path(os.getcwd())
+parentFiles = os.listdir(current.parent)
+
+if ".replit" in parentFiles:
+	client.run(os.getenv('token'))
+else:
+	pass
