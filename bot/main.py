@@ -306,4 +306,4 @@ if ".replit" in parentFiles:
 	keep_alive()
 	client.run(os.getenv('token'))
 else:
-	pass
+	client.run(os.environ.get('token'))
