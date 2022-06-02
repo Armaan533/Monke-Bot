@@ -14,7 +14,7 @@ class warn(commands.Cog):
     async def warn(self, ctx, member: discord.Member, *reasonList):
 
         if ("administrator" in member.guild_permissions) or (member == ctx.guild.owner):
-            await ctx.send(f"I cannot warn {member.mention} because he/she has administrator permissions")
+            await ctx.send(f"I cannot warn {member.mention} because they have administrator permissions")
         else:
             warncollection = mn.botdbase["Warns"]
             warndocument = warncollection.find_one({"_id": str(member.id), "guild": ctx.guild.id},{"_id": 0, "warns":1})
