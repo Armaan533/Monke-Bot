@@ -247,7 +247,14 @@ async def nuke_error(ctx, error):
 
 @client.command(aliases = ["Kick"])
 @commands.has_guild_permissions(kick_members=True)
-async def kick(ctx, member: discord.Member, kickReason = None):
+async def kick(ctx, member: discord.Member, *kickReasonList):
+	if len(kickReasonList) != 0:
+		kickReason = ""
+		for i in kickReasonList:
+			kickReason = kickReason + i + " "
+	else:
+		kickReason = None
+
 	await member.kick(reason =  kickReason)
 	if kickReason != None:
 		SuccessKickEmbed = discord.Embed(title="Successful",
@@ -268,7 +275,15 @@ async def kick_error(ctx, error):
 
 @client.command()
 @commands.has_guild_permissions(ban_members = True)
-async def ban(ctx, member: discord.Member, *, banReason = None):
+async def ban(ctx, member: discord.Member, *banReasonList):
+
+	if len(banReasonList) != 0:
+		banReason = ""
+		for i in banReasonList:
+			banReason = banReason + i + " "
+	else:
+		banReason = None
+	
 	await member.ban(reason = banReason)
 	if banReason != None:	
 		SuccessBanEmbed = discord.Embed(
