@@ -43,7 +43,7 @@ class warn(commands.Cog):
 
             warnDmEmbed = discord.Embed(
                     title = "",
-                    description = f"You were warned for {reason} by {ctx.author.name}#{ctx.author.discriminant} in {ctx.guild.name}\nCurrent Warn(s): `{currentwarns+1}`\nWe hope you manner well now onwards\nRegards,\nMonke Bot",
+                    description = f"You were warned for {reason} by {ctx.author.name}#{ctx.author.discriminator} in {ctx.guild.name}\nCurrent Warn(s): `{currentwarns+1}`\nWe hope you manner well now onwards\nRegards,\nMonke Bot",
                     color = lgd.hexConvertor(mn.colorCollection.find({},{"_id": 0, "Hex": 1}))
                 )
 
