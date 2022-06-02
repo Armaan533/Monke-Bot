@@ -53,5 +53,6 @@ class warn(commands.Cog):
                     color = lgd.hexConvertor(mn.colorCollection.find({},{"_id": 0, "Hex": 1}))
                 )
 
-            await ctx.send(embed = warnEmbed) 
-            await self.client.send_message(member, warnDmEmbed)
+            await ctx.send(embed = warnEmbed)
+            
+            await member.create_dm().send(embed = warnDmEmbed)
