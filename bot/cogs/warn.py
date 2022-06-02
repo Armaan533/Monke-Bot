@@ -55,4 +55,4 @@ class warn(commands.Cog):
 
             await ctx.send(embed = warnEmbed)
             
-            await member.create_dm().send(embed = warnDmEmbed)
+            await member.create_dm().send(warnDmEmbed)
