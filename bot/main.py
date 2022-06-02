@@ -4,7 +4,6 @@ import discord
 from discord.ext import commands
 import logical_definitions as lgd
 import mongo_declaration as mn
-from boto.s3.connection import S3Connection
 from pathlib import Path
 
 
