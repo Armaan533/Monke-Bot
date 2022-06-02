@@ -312,6 +312,7 @@ async def ban_error(ctx, error):
 
 
 client.load_extension("cogs.channel")
+client.load_extension("cogs.warn")
 
 
 if ".replit" in os.listdir():
