@@ -202,10 +202,9 @@ async def on_message(message):
 	if message.guild != None:
 		guild = str(message.guild.id)
 		gprefix = mn.guildpref.find_one({"_id": guild}, {"_id":0, "Prefix":1})["Prefix"]
-		# if client.user.mentioned_in(message) and message.author != message.guild.me and len(message.content) == 22:
-		# if client.user.mentioned_in(message) and message.author != message.guild.me:
+
 		if (message.content == f"<@!{client.user.id}>" or message.content==f"<@{client.user.id}>") and message.author != message.guild.me:
-	    # client.me.id??
+	    
 			mentionEmbed = discord.Embed(title = "Hello there :wave:",
 										 description = f"My prefix is `{gprefix}`",
 										 color = lgd.hexConvertor(mn.colorCollection.find({},{"_id":0,"Hex":1})))
