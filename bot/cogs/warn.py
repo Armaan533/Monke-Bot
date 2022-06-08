@@ -1,7 +1,8 @@
 import discord
-from discord.ext import commands
-import mongo_declaration as mn
 import logical_definitions as lgd
+import mongo_declaration as mn
+from discord.ext import commands
+
 
 def setup(client):
     client.add_cog(warn(client))
@@ -13,11 +14,19 @@ class warn(commands.Cog):
     @commands.command()
     async def warn(self, ctx, member: discord.Member, *reasonList):
 
-        if ("administrator" in member.guild_permissions) or (member == ctx.guild.owner):
-            await ctx.send(f"I cannot warn {member.mention} because they have administrator permissions")
+        if (member.guild_permissions.administrator) or (member == ctx.guild.owner):
+            await ctx.reply(f"I cannot warn {member.mention} because they have administrator permissions")
+        
+        elif ctx.author.id == member.id:
+            samePersonEmbed = discord.Embed(
+                title = "",
+                description = "Dude, you can't warn yourself. ||Atleast by this bot||",
+                color = lgd.hexConvertor(mn.colorCollection.find({},{"_id": 0, "Hex": 1}))
+            )
+            await ctx.reply(embed = samePersonEmbed)
         else:
-            warncollection = mn.botdbase["Warns"]
-            warndocument = warncollection.find_one({"_id": str(member.id), "guild": ctx.guild.id},{"_id": 0, "warns":1})
+            
+            warndocument = mn.warncollection.find_one({"_id": str(member.id), "guild": ctx.guild.id},{"_id": 0, "warns":1})
 
             reason = ""
             for i in reasonList:
@@ -30,7 +39,7 @@ class warn(commands.Cog):
                     "warns": 1
                 }
 
-                warncollection.insert_one(newWarn)
+                mn.warncollection.insert_one(newWarn)
                 currentwarns = 0
             else:
                 currentwarns = warndocument["warns"]
@@ -39,7 +48,7 @@ class warn(commands.Cog):
                         "warns": currentwarns+1
                     }
                 }
-                warncollection.update_one({"_id": str(member.id), "guild": ctx.guild.id}, upwarn)
+                mn.warncollection.update_one({"_id": str(member.id), "guild": ctx.guild.id}, upwarn)
 
             warnDmEmbed = discord.Embed(
                     title = "",
@@ -53,6 +62,38 @@ class warn(commands.Cog):
                     color = lgd.hexConvertor(mn.colorCollection.find({},{"_id": 0, "Hex": 1}))
                 )
 
-            await ctx.send(embed = warnEmbed)
+            await ctx.reply(embed = warnEmbed)
             dmchannel = await member.create_dm()
             await dmchannel.send(embed = warnDmEmbed)
+
+
+    @commands.command()
+    async def warn_remove(self, ctx : commands.Context, member: discord.Member, number: int):
+        warnsDoc = mn.warncollection.find_one({"_id": member.id, "guild": str(ctx.guild.id)},{"_id": 0, "warns": 1})
+        if warnsDoc == None:
+            noWarnsEmbed = discord.Embed(
+                title = "No Warns",
+                description = f"{member.mention} has 0 warns",
+                color = lgd.hexConvertor(mn.colorCollection.find({},{"_id": 0, "Hex": 1}))
+            )
+            await ctx.reply(embed = noWarnsEmbed)
+        elif number > warnsDoc["warns"]:
+            negativeRemovalEmbed = discord.Embed(
+                title = "Bad Argument",
+                description = f"You can't remove more warns than {member.mention} already has",
+                color = lgd.hexConvertor(mn.colorCollection.find({},{"_id": 0, "Hex": 1}))
+            )
+            await ctx.reply(embed = negativeRemovalEmbed)
+        else:
+            currentwarns = warnsDoc["warns"] - number
+            update = {
+                "$set": {"warns": warnsDoc["warns"] - number}
+            }
+            mn.warncollection.update_one({"_id": member.id, "guild": str(ctx.guild.id)},update)
+            
+            warnsRemovedEmbed = discord.Embed(
+                title = "Warns Removed",
+                description = f"Removed `{number}` warn(s) for {member.mention}\nNow they have {currentwarns} warn(s) left",
+                color = lgd.hexConvertor(mn.colorCollection.find({},{"_id": 0, "Hex": 1}))
+            )
+            await ctx.reply(embed = warnsRemovedEmbed)
