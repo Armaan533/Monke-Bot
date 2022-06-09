@@ -104,7 +104,7 @@ class warn(commands.Cog):
             await ctx.reply(embed = warnsRemovedEmbed)
 
         
-    @commands.command()
+    @commands.command(name = "set warn punishment")
     async def set_warn_punishment(self, ctx: commands.Context):
         punishList = []
         while True:
@@ -116,7 +116,7 @@ class warn(commands.Cog):
             )
             msg = await ctx.send(embed = punishTypeEmbed)
             try:
-                punishment = await self.client.wait_for("message",check = lambda m: m.author == ctx.author and m.channel == ctx.channel and m.content.lower in ["kick", "ban"], timeout = 30)
+                punishment = await self.client.wait_for("message",check = lambda m: m.author == ctx.author and m.channel == ctx.channel and m.content.lower() in ["kick", "ban"], timeout = 30)
             except asyncio.exceptions.TimeoutError:
                 await msg.edit(embed = discord.Embed(title = "", description = "Timed Out"))
                 return
