@@ -151,9 +151,10 @@ class warn(commands.Cog):
                 await msg.edit(embed = discord.Embed(title = "", description = "Timed Out"))
                 return
                 break
+            await choice.delete()
+            await msg.delete()
             if choice.content.lower() == "no":
                 break
-            await msg.delete()
         
         oldpunishdoc = mn.warnPunishCollection.find_one({"_id":str(ctx.guild.id)},{"_id": 0, "Punishment": 1})
         
