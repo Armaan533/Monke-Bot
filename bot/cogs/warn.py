@@ -69,7 +69,7 @@ class warn(commands.Cog):
 
     @commands.command()
     async def warn_remove(self, ctx : commands.Context, member: discord.Member, number: int):
-        warnsDoc = mn.warncollection.find_one({"_id": member.id, "guild": str(ctx.guild.id)},{"_id": 0, "warns": 1})
+        warnsDoc = mn.warncollection.find_one({"_id": str(member.id), "guild": ctx.guild.id},{"_id": 0, "warns": 1})
         if warnsDoc == None:
             noWarnsEmbed = discord.Embed(
                 title = "No Warns",
@@ -89,7 +89,7 @@ class warn(commands.Cog):
             update = {
                 "$set": {"warns": warnsDoc["warns"] - number}
             }
-            mn.warncollection.update_one({"_id": member.id, "guild": str(ctx.guild.id)},update)
+            mn.warncollection.update_one({"_id": str(member.id), "guild": ctx.guild.id},update)
             
             warnsRemovedEmbed = discord.Embed(
                 title = "Warns Removed",
