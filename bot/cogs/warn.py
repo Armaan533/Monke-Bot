@@ -104,7 +104,7 @@ class warn(commands.Cog):
             await ctx.reply(embed = warnsRemovedEmbed)
 
         
-    @commands.command(name = "set warn punishment")
+    @commands.command()
     async def set_warn_punishment(self, ctx: commands.Context):
         punishList = []
         while True:
