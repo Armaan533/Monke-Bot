@@ -1,14 +1,15 @@
+import asyncio
 import discord
 import logical_definitions as lgd
 import mongo_declaration as mn
-from discord.ext import commands
+from discord.ext import commands, tasks
 
 
 def setup(client):
     client.add_cog(warn(client))
 
 class warn(commands.Cog):
-    def __init__(self, client):
+    def __init__(self, client: discord.Client):
         self.client = client
 
     @commands.command()
@@ -65,7 +66,11 @@ class warn(commands.Cog):
             await ctx.reply(embed = warnEmbed)
             dmchannel = await member.create_dm()
             await dmchannel.send(embed = warnDmEmbed)
-
+            
+            warnpunishdoc = mn.warnPunishCollection.find_one({"_id": str(ctx.guild.id)},{"_id":0})
+            if warnpunishdoc != None:
+                for i in warnpunishdoc:
+                    await ctx.send(i)
 
     @commands.command()
     async def warn_remove(self, ctx : commands.Context, member: discord.Member, number: int):
@@ -97,3 +102,71 @@ class warn(commands.Cog):
                 color = lgd.hexConvertor(mn.colorCollection.find({},{"_id": 0, "Hex": 1}))
             )
             await ctx.reply(embed = warnsRemovedEmbed)
+
+        
+    @commands.command()
+    async def set_warn_punishment(self, ctx: commands.Context):
+        punishList = []
+        while True:
+
+            punishTypeEmbed = discord.Embed(
+                title = "Punishment Type",
+                description = "For Example: **kick** or **ban**\nOlder Punishments will be discarded",
+                color = lgd.hexConvertor(mn.colorCollection.find({},{"_id": 0, "Hex": 1}))
+            )
+            msg = await ctx.send(embed = punishTypeEmbed)
+            try:
+                punishment = await self.client.wait_for("message",check = lambda m: m.author == ctx.author and m.channel == ctx.channel and m.content.lower in ["kick", "ban"], timeout = 30)
+            except asyncio.exceptions.TimeoutError:
+                await msg.edit(embed = discord.Embed(title = "", description = "Timed Out"))
+                return
+                break
+            await punishment.delete()
+
+            numberOfWarnsEmbed = discord.Embed(
+                title = "Number of Warns needed",
+                description = "How many warns are needed to trigger the punishment?",
+                color = lgd.hexConvertor(mn.colorCollection.find({},{"_id": 0, "Hex": 1}))
+            )
+            await msg.edit(embed = numberOfWarnsEmbed)
+            try:
+                noOfWarns = await self.client.wait_for("message", check= lambda m: m.author == ctx.author and m.channel == ctx.channel, timeout = 30)
+            except asyncio.exceptions.TimeoutError:
+                await msg.edit(embed = discord.Embed(title = "", description = "Timed Out"))
+                return
+                break
+            await noOfWarns.delete()
+
+            punishList.append({punishment.content: int(noOfWarns.content)})
+
+            morePunishmentEmbed = discord.Embed(
+                title = "More Punishments?",
+                description = "Do you want more punishments on warn?\nYes or No",
+                color = lgd.hexConvertor(mn.colorCollection.find({},{"_id": 0, "Hex": 1}))
+            )
+            try:
+                choice = await self.client.wait_for("message", check = lambda m: m.author == ctx.author and m.channel == ctx.channel and m.content.lower() in ["yes","no"], timeout = 30)
+            except asyncio.exceptions.TimeoutError:
+                await msg.edit(embed = discord.Embed(title = "", description = "Timed Out"))
+                return
+                break
+            if choice.content.lower() == "no":
+                break
+            await msg.delete()
+        
+        oldpunishdoc = mn.warnPunishCollection.find_one({"_id":str(ctx.guild.id)},{"_id": 0, "Punishment": 1})
+        
+        if oldpunishdoc == None:
+            mn.warnPunishCollection.insert_one({"_id": str(ctx.guild.id), "Punishment": punishList})
+        else:
+            mn.warnPunishCollection.update_one(
+                {"_id": str(ctx.guild.id)},
+                {"$set": {"Punishment":punishList}}
+                )
+
+        punishmentSuccessEmbed = discord.Embed(
+            title = "",
+            description = "_Punishment Saved Successfully_\n||Rule Breakers Watchout!!||",
+            color = lgd.hexConvertor(mn.colorCollection.find({},{"_id": 0, "Hex": 1}))
+        )
+        await ctx.send(punishmentSuccessEmbed)
