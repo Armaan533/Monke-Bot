@@ -144,6 +144,7 @@ class warn(commands.Cog):
                 description = "Do you want more punishments on warn?\nYes or No",
                 color = lgd.hexConvertor(mn.colorCollection.find({},{"_id": 0, "Hex": 1}))
             )
+            await msg.edit(embed = morePunishmentEmbed)
             try:
                 choice = await self.client.wait_for("message", check = lambda m: m.author == ctx.author and m.channel == ctx.channel and m.content.lower() in ["yes","no"], timeout = 30)
             except asyncio.exceptions.TimeoutError:
@@ -169,4 +170,4 @@ class warn(commands.Cog):
             description = "_Punishment Saved Successfully_\n||Rule Breakers Watchout!!||",
             color = lgd.hexConvertor(mn.colorCollection.find({},{"_id": 0, "Hex": 1}))
         )
-        await ctx.send(punishmentSuccessEmbed)
+        await ctx.send(embed = punishmentSuccessEmbed)
