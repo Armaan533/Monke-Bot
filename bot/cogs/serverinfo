@@ -4,9 +4,9 @@ import logical_definitions as lgd
 import mongo_declaration as mn
 
 def setup(client):
-    client.add_cog(Serverinfo(client))
+    client.add_cog(serverinfo(client))
 
-class Serverinfo(commands.Cog):
+class serverinfo(commands.Cog):
     
     def __init__(self, client):
         self.client = client
