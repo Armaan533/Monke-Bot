@@ -14,14 +14,14 @@ class Userinfo(commands.Cog):
 
     @commands.command(aliases = ["Userinfo","Memberinfo"])
     async def userinfo(self, ctx: commands.Context, member: str = None):
-        if member.startswith("<@") and member.endswith(">"):
+        if member == None:
+            id = ctx.author.id
+
+        elif member.startswith("<@") and member.endswith(">"):
             id = int(member.lstrip("<@").rstrip(">"))
 
         elif member.startswith("<@!") and member.endswith(">"):
             id = int(member.lstrip("<@!").rstrip(">"))
-
-        elif member == None:
-            id = ctx.author.id
 
         else:
             id = int(member)
