@@ -13,7 +13,7 @@ class serverinfo(commands.Cog):
 
     @commands.command()
     async def serverinfo(self, ctx: commands.Context):
-        guild : discord.Guild = await self.client.fetch_guild(ctx.guild.id)
+        guild = ctx.guild
         serverInfoEmbed = discord.Embed(
             title = guild.name,
             timestamp = guild.created_at,
