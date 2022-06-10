@@ -13,12 +13,16 @@ class Userinfo(commands.Cog):
         self.client = client
 
     @commands.command(aliases = ["Userinfo","Memberinfo"])
-    async def userinfo(self, ctx: commands.Context, member: str):
+    async def userinfo(self, ctx: commands.Context, member: str = None):
         if member.startswith("<@") and member.endswith(">"):
             id = int(member.lstrip("<@").rstrip(">"))
 
         elif member.startswith("<@!") and member.endswith(">"):
             id = int(member.lstrip("<@!").rstrip(">"))
+
+        elif member == None:
+            id = ctx.author.id
+
         else:
             id = int(member)
 
@@ -61,5 +65,8 @@ class Userinfo(commands.Cog):
                 value = roleMention,
                 inline = False
             )
+
+            userinfoEmbed.set_thumbnail(url = user.avatar_url)
+            userinfoEmbed.set_footer(text = f"Requested by {ctx.author.name}", icon_url = ctx.author.avatar_url)
 
             await ctx.send(embed = userinfoEmbed)
