@@ -42,4 +42,8 @@ class Userinfo(commands.Cog):
                 value = user.created_at.utcnow(),
                 inline = True
             )
-        
+
+            # userinfoEmbed.add_field(
+            #     name = ""
+            # )
+            await ctx.send(embed = userinfoEmbed)
