@@ -39,7 +39,7 @@ class serverinfo(commands.Cog):
         serverInfoEmbed.add_field(
             name = "Members",
             value = f"```Members: {str(member)}```",
-            inline = False
+            inline = True
         )
 
         serverInfoEmbed.add_field(
@@ -57,7 +57,7 @@ class serverinfo(commands.Cog):
         serverInfoEmbed.add_field(
             name = "Categories",
             value = f"```{str(len(guild.categories))}```",
-            inline = False
+            inline = True
         )
         
         serverInfoEmbed.add_field(
@@ -90,7 +90,7 @@ class serverinfo(commands.Cog):
         serverInfoEmbed.add_field(
             name = "Server Boost Level",
             value = f"```{str(guild.premium_tier)}```",
-            inline = False
+            inline = True
         )
 
         serverInfoEmbed.add_field(
