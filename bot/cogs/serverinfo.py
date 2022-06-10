@@ -20,7 +20,7 @@ class serverinfo(commands.Cog):
             color = lgd.hexConvertor(mn.colorCollection.find({},{"_id":0,"Hex":1}))
         )
         serverInfoEmbed.set_thumbnail(url = guild.icon_url)
-        serverInfoEmbed.set_footer(f"Requested By {ctx.author.name} | Server Created On", icon_url = ctx.author.avatar_url)
+        serverInfoEmbed.set_footer(text = f"Requested By {ctx.author.name} | Server Created On", icon_url = ctx.author.avatar_url)
 
         serverInfoEmbed.add_field(
             name = "Owner",
