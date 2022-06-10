@@ -13,4 +13,4 @@ class Userinfo(commands.Cog):
 
     @commands.command(aliases = ["Userinfo","Memberinfo"])
     async def userinfo(self, ctx: commands.Context, member):
-        await ctx.send(type(member))
+        print(member)
