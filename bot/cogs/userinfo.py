@@ -33,13 +33,13 @@ class Userinfo(commands.Cog):
 
             userinfoEmbed.add_field(
                 name = "Joined at",
-                value = user.joined_at.utcnow(),
+                value = user.joined_at,
                 inline = True
             )
 
             userinfoEmbed.add_field(
                 name = "Created at",
-                value = user.created_at.utcnow(),
+                value = user.created_at,
                 inline = True
             )
 
