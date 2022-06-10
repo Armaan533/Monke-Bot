@@ -1,4 +1,5 @@
 from discord.ext import commands
+import datetime
 import discord
 import mongo_declaration as mn
 import logical_definitions as lgd
@@ -31,15 +32,20 @@ class Userinfo(commands.Cog):
                 color = lgd.hexConvertor(mn.colorCollection.find({},{"_id": 0, "Hex": 1}))
             )
 
+            joiningDateTime = user.joined_at
+            joinTimestamp = datetime.datetime.timestamp(joiningDateTime)
+
             userinfoEmbed.add_field(
                 name = "Joined at",
-                value = user.joined_at,
+                value = f"<t:{joinTimestamp}:F>",
                 inline = True
             )
 
+            creationDateTime = user.created_at
+            createTimestamp = datetime.datetime.timestamp(creationDateTime)
             userinfoEmbed.add_field(
                 name = "Created at",
-                value = user.created_at,
+                value = f"<t:{createTimestamp}:F>",
                 inline = True
             )
 
