@@ -48,8 +48,18 @@ class Userinfo(commands.Cog):
                 value = f"<t:{int(createTimestamp)}:F>",
                 inline = True
             )
+            roleMention = ""
+            totalRoles = 0
+            for i in user.roles:
+                if totalRoles == 0:
+                    totalRoles += 1
+                    continue
+                roleMention += i.mention
 
-            # userinfoEmbed.add_field(
-            #     name = ""
-            # )
+            userinfoEmbed.add_field(
+                name = f"Roles: [{totalRoles}]",
+                value = roleMention,
+                inline = False
+            )
+
             await ctx.send(embed = userinfoEmbed)
