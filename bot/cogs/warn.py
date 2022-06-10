@@ -2,7 +2,7 @@ import asyncio
 import discord
 import logical_definitions as lgd
 import mongo_declaration as mn
-from discord.ext import commands, tasks
+from discord.ext import commands
 
 
 def setup(client):
@@ -69,8 +69,7 @@ class warn(commands.Cog):
             
             warnpunishdoc = mn.warnPunishCollection.find_one({"_id": str(ctx.guild.id)},{"_id":0})
             if warnpunishdoc != None:
-                for i in warnpunishdoc:
-                    await ctx.send(i)
+                print(warnpunishdoc)
 
     @commands.command()
     async def warn_remove(self, ctx : commands.Context, member: discord.Member, number: int):
