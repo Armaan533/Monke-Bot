@@ -11,6 +11,6 @@ class Userinfo(commands.Cog):
     def __init__(self, client):
         self.client = client
 
-    @commands.command()
+    @commands.command(aliases = ["Userinfo","Memberinfo"])
     async def userinfo(self, ctx: commands.Context, member):
         await ctx.send(member)
