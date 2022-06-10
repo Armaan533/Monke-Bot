@@ -99,9 +99,4 @@ class serverinfo(commands.Cog):
             inline = True
         )
 
-
-        # serverInfoEmbed.add_field(
-        #     name = ""
-        # )
-
         await ctx.send(embed = serverInfoEmbed)
