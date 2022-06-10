@@ -169,9 +169,6 @@ async def say(ctx, *, message = None):
 		await ctx.message.delete()
 		await ctx.send(embed = me2)
 
-@client.command(aliases = ["Userinfo","Memberinfo"])
-async def userinfo(ctx, user: discord.User):
-	await ctx.send(user.id)
 
 @client.command()
 async def roleinfo(ctx, role: discord.Role):
