@@ -19,7 +19,7 @@ class Userinfo(commands.Cog):
         elif member.startswith("<@!") and member.endswith(">"):
             id = int(member.lstrip("<@!").rstrip(">"))
         else:
-            id = member
+            id = int(member)
 
         user = discord.utils.get(ctx.guild.members, id = id)
         
