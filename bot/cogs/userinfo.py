@@ -37,7 +37,7 @@ class Userinfo(commands.Cog):
 
             userinfoEmbed.add_field(
                 name = "Joined at",
-                value = f"<t:{joinTimestamp}:F>",
+                value = f"<t:{int(joinTimestamp)}:F>",
                 inline = True
             )
 
@@ -45,7 +45,7 @@ class Userinfo(commands.Cog):
             createTimestamp = datetime.datetime.timestamp(creationDateTime)
             userinfoEmbed.add_field(
                 name = "Created at",
-                value = f"<t:{createTimestamp}:F>",
+                value = f"<t:{int(createTimestamp)}:F>",
                 inline = True
             )
 
