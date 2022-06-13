@@ -9,6 +9,7 @@ from pathlib import Path
 
 intent = discord.Intents.default()
 intent.members = True
+intent.messages = True
 
 defaultPrefix = "+"
 
