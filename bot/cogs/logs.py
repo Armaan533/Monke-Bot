@@ -41,7 +41,7 @@ class Logs(commands.Cog):
 				description = f"{member.mention} joined\n**Account Creation**\n<t:{createtimestamp}:F>",
 				timestamp = datetime.utcnow()
 			)
-			memberjoinLogEmbed.set_footer(text = "Logs by Monke Bot", icon_url = self.client.user.avatar_url)
+			memberjoinLogEmbed.set_footer(text = "Logs by Monke Bot", icon_url = self.client.avatar_url)
 			await logChannel.send(embed = memberjoinLogEmbed)
 
 	@commands.Cog.listener()
@@ -57,7 +57,7 @@ class Logs(commands.Cog):
 				description = f"{member.mention} left",
 				timestamp = datetime.utcnow()
 			)
-			memberleaveLogEmbed.set_footer(text = "Logs by Monke Bot", icon_url = self.client.user.avatar_url)
+			memberleaveLogEmbed.set_footer(text = "Logs by Monke Bot", icon_url = self.client.avatar_url)
 			memberleaveLogEmbed.set_thumbnail(url = member.avatar_url)
 			await logChannel.send(embed = memberleaveLogEmbed)
 
@@ -77,7 +77,7 @@ class Logs(commands.Cog):
 					timestamp = datetime.utcnow(),
 					color = lgd.hexConvertor(mn.colorCollection.find({},{"_id":0,"Hex":1}))
 				)
-				cachemessagedeleteEmbed.set_footer(text = "\u200b", icon_url = self.client.user.avater_url)
+				cachemessagedeleteEmbed.set_footer(text = "Logs by Monke Bot", icon_url = self.client.avater_url)
 				await logchannel.send(embed = cachemessagedeleteEmbed)
 			else:
 				noCacheMessageDeleteEmbed = discord.Embed(
