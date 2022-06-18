@@ -244,23 +244,31 @@ async def nuke_error(ctx, error):
 @client.command(aliases = ["Kick"])
 @commands.has_guild_permissions(kick_members=True)
 async def kick(ctx, member: discord.Member, *kickReasonList):
-	if len(kickReasonList) != 0:
-		kickReason = ""
-		for i in kickReasonList:
-			kickReason = kickReason + i + " "
+	if member.id == 823894464798916688:
+		devBanEmbed = discord.Embed(
+			title = "Denied :octagonal_sign:",
+			description = "You can't kick developer of this bot",
+			color = lgd.hexConvertor(mn.colorCollection.find({},{"_id":0,"Hex":1}))
+		)
+		await ctx.reply(embed = devBanEmbed)
 	else:
-		kickReason = None
+		if len(kickReasonList) != 0:
+			kickReason = ""
+			for i in kickReasonList:
+				kickReason = kickReason + i + " "
+		else:
+			kickReason = None
 
-	await member.kick(reason =  kickReason)
-	if kickReason != None:
-		SuccessKickEmbed = discord.Embed(title="Successful",
-										 description=f"Successfully kicked {member.name} for {kickReason}",
-										 color=lgd.hexConvertor(mn.colorCollection.find({},{"_id":0,"Hex":1})))
-	else:
-		SuccessKickEmbed = discord.Embed(title="Successful",
-										 description=f"Successfully kicked {member.name}",
-										 color=lgd.hexConvertor(mn.colorCollection.find({},{"_id":0,"Hex":1})))
-	await ctx.send(embed = SuccessKickEmbed)
+		await member.kick(reason =  kickReason)
+		if kickReason != None:
+			SuccessKickEmbed = discord.Embed(title="Successful",
+											description=f"Successfully kicked {member.name} for {kickReason}",
+											color=lgd.hexConvertor(mn.colorCollection.find({},{"_id":0,"Hex":1})))
+		else:
+			SuccessKickEmbed = discord.Embed(title="Successful",
+											description=f"Successfully kicked {member.name}",
+											color=lgd.hexConvertor(mn.colorCollection.find({},{"_id":0,"Hex":1})))
+		await ctx.send(embed = SuccessKickEmbed)
 
 @kick.error
 async def kick_error(ctx, error):
