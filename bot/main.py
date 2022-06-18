@@ -275,10 +275,11 @@ async def ban(ctx, member: discord.Member, *banReasonList):
 
 	if member.id == 823894464798916688:
 		devBanEmbed = discord.Embed(
-			title = "Denied :stop:",
+			title = "Denied :octagonal_sign:",
 			description = "You can't ban developer of this bot",
 			color = lgd.hexConvertor(mn.colorCollection.find({},{"_id":0,"Hex":1}))
 		)
+		await ctx.reply(embed = devBanEmbed)
 	else:
 		if len(banReasonList) != 0:
 			banReason = ""
