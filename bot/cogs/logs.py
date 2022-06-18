@@ -69,15 +69,35 @@ class Logs(commands.Cog):
 			Memberguild = self.client.get_guild(payload.guild_id)
 			logchannel = discord.utils.get(Memberguild.text_channels, id = int(mn.guildpref.find_one({"_id": str(payload.guild_id)},{"_id":0,"Logs":1})["Logs"]))
 			message = payload.cached_message
+
+			async for entry in Memberguild.audit_logs(limit = 1, action = discord.AuditLogAction.message_delete):
+				deleter = entry.user
+
 			if message != None:
-				author = message.author
 				cachemessagedeleteEmbed = discord.Embed(
-					title = f"Message Deleted By {author.name}#{author.discriminator}",
-					description = f"Message Contents: ``{message.content}``",
+					title = f"Message Deleted By {deleter.name}#{deleter.discriminator}",
+					description = "",
 					timestamp = datetime.utcnow(),
 					color = lgd.hexConvertor(mn.colorCollection.find({},{"_id":0,"Hex":1}))
 				)
 				cachemessagedeleteEmbed.set_footer(text = "\u200b")
+
+				cachemessagedeleteEmbed.add_field(
+					name = "Message Sender",
+					value = f"{message.author.mention}",
+					inline = True
+				)
+
+				cachemessagedeleteEmbed.add_field(
+					name = "Message Deleter",
+					value = f"{deleter.mention}",
+					inline = True
+				)
+
+				cachemessagedeleteEmbed.add_field(
+					name = ""
+				)
+
 				await logchannel.send(embed = cachemessagedeleteEmbed)
 			else:
 				noCacheMessageDeleteEmbed = discord.Embed(
