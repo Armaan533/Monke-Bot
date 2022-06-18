@@ -273,24 +273,31 @@ async def kick_error(ctx, error):
 @commands.has_guild_permissions(ban_members = True)
 async def ban(ctx, member: discord.Member, *banReasonList):
 
-	if len(banReasonList) != 0:
-		banReason = ""
-		for i in banReasonList:
-			banReason = banReason + i + " "
+	if member.id == 823894464798916688:
+		devBanEmbed = discord.Embed(
+			title = "Denied :stop:",
+			description = "You can't ban developer of this bot",
+			color = lgd.hexConvertor(mn.colorCollection.find({},{"_id":0,"Hex":1}))
+		)
 	else:
-		banReason = None
-	
-	await member.ban(reason = banReason)
-	if banReason != None:	
-		SuccessBanEmbed = discord.Embed(
-			title="Successful",
-			description=f"Successfully banned {member.name} for {banReason}",
-			color=lgd.hexConvertor(mn.colorCollection.find({},{"_id":0,"Hex":1})))
-	else:
-		SuccessBanEmbed = discord.Embed(title="Successful",
-										description=f"Successfully banned {member.name}",
-										color=lgd.hexConvertor(mn.colorCollection.find({},{"_id":0,"Hex":1})))
-	await ctx.send(embed = SuccessBanEmbed)
+		if len(banReasonList) != 0:
+			banReason = ""
+			for i in banReasonList:
+				banReason = banReason + i + " "
+		else:
+			banReason = None
+		
+		await member.ban(reason = banReason)
+		if banReason != None:	
+			SuccessBanEmbed = discord.Embed(
+				title="Successful",
+				description=f"Successfully banned {member.name} for {banReason}",
+				color=lgd.hexConvertor(mn.colorCollection.find({},{"_id":0,"Hex":1})))
+		else:
+			SuccessBanEmbed = discord.Embed(title="Successful",
+											description=f"Successfully banned {member.name}",
+											color=lgd.hexConvertor(mn.colorCollection.find({},{"_id":0,"Hex":1})))
+		await ctx.send(embed = SuccessBanEmbed)
 
 @ban.error
 async def ban_error(ctx, error):
