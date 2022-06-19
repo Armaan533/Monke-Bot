@@ -106,6 +106,12 @@ class Logs(commands.Cog):
 					inline = False
 				)
 
+				cachemessagedeleteEmbed.add_field(
+					name = "Message Content",
+					value = f"```{message.content}```",
+					inline = False
+				)
+
 				await logchannel.send(embed = cachemessagedeleteEmbed)
 			else:
 				noCacheMessageDeleteEmbed = discord.Embed(
