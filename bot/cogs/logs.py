@@ -72,7 +72,7 @@ class Logs(commands.Cog):
 
 			async for entry in Memberguild.audit_logs(limit = 1, action = discord.AuditLogAction.message_delete):
 				deleter = entry.user
-
+			msgchannel = discord.utils.get(Memberguild.text_channels, id = payload.channel_id)
 			if message != None:
 				cachemessagedeleteEmbed = discord.Embed(
 					title = f"Message Deleted By {deleter.name}#{deleter.discriminator}",
@@ -80,7 +80,7 @@ class Logs(commands.Cog):
 					timestamp = datetime.utcnow(),
 					color = lgd.hexConvertor(mn.colorCollection.find({},{"_id":0,"Hex":1}))
 				)
-				cachemessagedeleteEmbed.set_footer(text = "\u200b")
+				cachemessagedeleteEmbed.set_footer(text = f"ID:{message.id}")
 
 				cachemessagedeleteEmbed.add_field(
 					name = "Message Sender",
@@ -95,17 +95,21 @@ class Logs(commands.Cog):
 				)
 
 				cachemessagedeleteEmbed.add_field(
-					name = ""
+					name = "Channel",
+					value = msgchannel.mention,
+					inline = False
 				)
 
 				await logchannel.send(embed = cachemessagedeleteEmbed)
 			else:
 				noCacheMessageDeleteEmbed = discord.Embed(
-					title = f"Message Deleted in <#{payload.channel_id}",
-					description = "Message Content not available",
+					title = "Message Deleted",
+					description = f"Message Content not available\nChannel: {msgchannel.mention}",
 					timestamp = datetime.utcnow(),
 					color = lgd.hexConvertor(mn.colorCollection.find({},{"_id":0, "Hex": 1}))
 				)
+				noCacheMessageDeleteEmbed.set_footer(text = f"ID: {payload.message_id}")
 
+				await logchannel.send(embed = noCacheMessageDeleteEmbed)
 def setup(client):
 	client.add_cog(Logs(client))
