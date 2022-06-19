@@ -105,12 +105,12 @@ class Logs(commands.Cog):
 					value = msgchannel.mention,
 					inline = False
 				)
-
-				cachemessagedeleteEmbed.add_field(
-					name = "Message Content",
-					value = f"```{message.content}```",
-					inline = False
-				)
+				if message.content != "":
+					cachemessagedeleteEmbed.add_field(
+						name = "Message Content",
+						value = f"```{message.content}```",
+						inline = False
+					)
 
 				await logchannel.send(embed = cachemessagedeleteEmbed)
 			else:
