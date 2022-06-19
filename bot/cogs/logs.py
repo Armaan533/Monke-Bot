@@ -72,6 +72,8 @@ class Logs(commands.Cog):
 
 			async for entry in Memberguild.audit_logs(limit = 1, action = discord.AuditLogAction.message_delete):
 				deleter = entry.user
+				sender = entry.target
+				print(sender)
 			msgchannel = discord.utils.get(Memberguild.text_channels, id = payload.channel_id)
 			if message != None:
 				cachemessagedeleteEmbed = discord.Embed(
@@ -111,5 +113,13 @@ class Logs(commands.Cog):
 				noCacheMessageDeleteEmbed.set_footer(text = f"ID: {payload.message_id}")
 
 				await logchannel.send(embed = noCacheMessageDeleteEmbed)
+
+	# @commands.Cog.listener()
+	# async def on_raw_bulk_message_delete(self, payload: discord.RawBulkMessageDeleteEvent):
+	# 	if mn.guildpref.find_one({"_id":str(payload.guild_id)},{"_id":0,"Logs":1})["Logs"] == False:
+	# 		pass
+	# 	else:
+
+
 def setup(client):
 	client.add_cog(Logs(client))
