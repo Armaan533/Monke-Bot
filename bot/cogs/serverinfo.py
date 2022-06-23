@@ -3,8 +3,8 @@ import discord
 import logical_definitions as lgd
 import mongo_declaration as mn
 
-def setup(client):
-    client.add_cog(serverinfo(client))
+async def setup(client):
+    await client.add_cog(serverinfo(client))
 
 class serverinfo(commands.Cog):
     

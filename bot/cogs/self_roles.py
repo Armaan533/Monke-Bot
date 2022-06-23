@@ -80,5 +80,5 @@ class self_roles(commands.Cog):
 		else:
 			pass
 
-def setup(client):
-	client.add_cog(self_roles(client))
+async def setup(client):
+	await client.add_cog(self_roles(client))

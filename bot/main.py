@@ -322,13 +322,14 @@ async def ban_error(ctx, error):
 											color = lgd.hexConvertor(mn.colorCollection.find({},{"_id":0,"Hex":1})))
 		await ctx.send(embed = banUserNotFoundEmbed)
 
-
-
-client.load_extension("cogs.channel")
-client.load_extension("cogs.warn")
-client.load_extension("cogs.serverinfo")
-client.load_extension("cogs.userinfo")
-client.load_extension("cogs.logs")
+@client.command()
+async def loadall(ctx: commands.Context):
+	await client.load_extension("cogs.channel")
+	await client.load_extension("cogs.warn")
+	await client.load_extension("cogs.serverinfo")
+	await client.load_extension("cogs.userinfo")
+	await client.load_extension("cogs.logs")
+	await ctx.send("Cogs enabled successfully", delete_after = 5)
 
 if ".replit" in os.listdir():
 	keep_alive()

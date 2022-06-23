@@ -23,5 +23,5 @@ class Channel(commands.Cog):
 		await ctx.send(embed = discord.Embed(description = "Channel unlocked successfully",
 											color = lgd.hexConvertor(mn.colorCollection.find({},{"_id":0,"Hex":1}))))
 
-def setup(client):
-    client.add_cog(Channel(client))
+async def setup(client):
+    await client.add_cog(Channel(client))

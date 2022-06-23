@@ -5,8 +5,8 @@ import mongo_declaration as mn
 from discord.ext import commands
 
 
-def setup(client):
-    client.add_cog(warn(client))
+async def setup(client):
+    await client.add_cog(warn(client))
 
 class warn(commands.Cog):
     def __init__(self, client: discord.Client):
