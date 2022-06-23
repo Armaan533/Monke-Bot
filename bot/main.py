@@ -8,7 +8,7 @@ import mongo_declaration as mn
 
 intent = discord.Intents.default()
 intent.members = True
-intent.messages = True
+intent.message_content = True
 
 defaultPrefix = "+"
 
@@ -314,7 +314,6 @@ async def loadall(ctx: commands.Context):
 	await ctx.send("Cogs enabled successfully", delete_after = 5)
 
 
-# else:
 async def start():
 	await client.start(os.environ.get('token'))
 
