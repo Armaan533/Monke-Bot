@@ -1,10 +1,9 @@
-from keep_alive import keep_alive
+import asyncio
 import os
 import discord
 from discord.ext import commands
 import logical_definitions as lgd
 import mongo_declaration as mn
-from pathlib import Path
 
 
 intent = discord.Intents.default()
@@ -336,4 +335,6 @@ async def loadall(ctx: commands.Context):
 # 	client.run(os.getenv('token'))
 # else:
 async def start():
-	await client.run(os.environ.get('token'))
+	await client.start(os.environ.get('token'))
+
+asyncio.run(main = start())
