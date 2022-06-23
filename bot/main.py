@@ -181,7 +181,6 @@ async def invite(ctx):
 
 @client.listen("on_message")
 async def on_message(message):
-	await client.process_commands(message = message)
 	if message.guild != None:
 		guild = str(message.guild.id)
 		gprefix = mn.guildpref.find_one({"_id": guild}, {"_id":0, "Prefix":1})["Prefix"]
