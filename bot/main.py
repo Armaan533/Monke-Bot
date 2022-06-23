@@ -4,6 +4,7 @@ import discord
 from discord.ext import commands
 import logical_definitions as lgd
 import mongo_declaration as mn
+import sys
 
 
 intent = discord.Intents.default()
@@ -304,13 +305,18 @@ async def ban_error(ctx, error):
 											color = lgd.hexConvertor(mn.colorCollection.find({},{"_id":0,"Hex":1})))
 		await ctx.send(embed = banUserNotFoundEmbed)
 
-
-async def start():
-	await client.start(os.environ.get('token'))
+@client.event()
+async def setup_hook():
 	await client.load_extension("cogs.channel")
 	await client.load_extension("cogs.warn")
 	await client.load_extension("cogs.serverinfo")
 	await client.load_extension("cogs.userinfo")
 	await client.load_extension("cogs.logs")
 
+async def start():
+	await client.start(os.environ.get('token'))
+	
+
 asyncio.run(main = start())
+
+print("Test", file = sys.stderr)
