@@ -17,7 +17,7 @@ def get_prefix(client, message: discord.Message):
 	return commands.when_mentioned_or(Gprefix)(client, message)
 
 # Creating a bot instance
-client = commands.Bot(command_prefix = get_prefix, intents = intent)
+client = commands.Bot(command_prefix = "+", intents = intent)
 
 # Deleting inbuilt help command
 client.remove_command('help')
@@ -170,21 +170,6 @@ async def say(ctx, *, message = None):
 		await ctx.send(embed = me2)
 
 
-@client.command()
-async def roleinfo(ctx, role: discord.Role):
-	await ctx.send(role.id)
-    
-#	Deprecated Command
-#	Not in use anymore
-
-#@client.command()
-#@commands.has_permissions(administrator=True)
-#async def spam(ctx, num:int, *, text: str):
-#  await ctx.message.delete()
-#  for i in range(num):
-#    await ctx.send(text)
-
-
 @client.command(aliases = ["Invite","invitebot","Invitebot"])
 async def invite(ctx):
 	inviteEmbed = discord.Embed(title = "Invite bot!",
@@ -206,8 +191,6 @@ async def on_message(message):
 										 description = f"My prefix is `{gprefix}`",
 										 color = lgd.hexConvertor(mn.colorCollection.find({},{"_id":0,"Hex":1})))
 			await message.channel.send(embed = mentionEmbed)
-	    # elif "★" in message.description:
-	    #     await message.channel.send("it is working")
 	
 
 @client.command(aliases = ["Purge"])
@@ -330,9 +313,7 @@ async def loadall(ctx: commands.Context):
 	await client.load_extension("cogs.logs")
 	await ctx.send("Cogs enabled successfully", delete_after = 5)
 
-# if ".replit" in os.listdir():
-# 	keep_alive()
-# 	client.run(os.getenv('token'))
+
 # else:
 async def start():
 	await client.start(os.environ.get('token'))
