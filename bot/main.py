@@ -17,7 +17,7 @@ def get_prefix(client, message: discord.Message):
 	return commands.when_mentioned_or(Gprefix)(client, message)
 
 # Creating a bot instance
-client = commands.Bot(command_prefix = "+", intents = intent)
+client = commands.Bot(command_prefix = get_prefix, intents = intent)
 
 # Deleting inbuilt help command
 client.remove_command('help')
