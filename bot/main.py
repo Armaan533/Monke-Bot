@@ -331,8 +331,9 @@ async def loadall(ctx: commands.Context):
 	await client.load_extension("cogs.logs")
 	await ctx.send("Cogs enabled successfully", delete_after = 5)
 
-if ".replit" in os.listdir():
-	keep_alive()
-	client.run(os.getenv('token'))
-else:
-	client.run(os.environ.get('token'))
+# if ".replit" in os.listdir():
+# 	keep_alive()
+# 	client.run(os.getenv('token'))
+# else:
+async def start():
+	await client.run(os.environ.get('token'))
