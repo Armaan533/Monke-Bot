@@ -181,6 +181,7 @@ async def invite(ctx):
 
 @client.listen("on_message")
 async def on_message(message):
+	await client.process_commands(message = message)
 	if message.guild != None:
 		guild = str(message.guild.id)
 		gprefix = mn.guildpref.find_one({"_id": guild}, {"_id":0, "Prefix":1})["Prefix"]
@@ -304,17 +305,13 @@ async def ban_error(ctx, error):
 											color = lgd.hexConvertor(mn.colorCollection.find({},{"_id":0,"Hex":1})))
 		await ctx.send(embed = banUserNotFoundEmbed)
 
-@client.command()
-async def loadall(ctx: commands.Context):
+
+async def start():
+	await client.start(os.environ.get('token'))
 	await client.load_extension("cogs.channel")
 	await client.load_extension("cogs.warn")
 	await client.load_extension("cogs.serverinfo")
 	await client.load_extension("cogs.userinfo")
 	await client.load_extension("cogs.logs")
-	await ctx.send("Cogs enabled successfully", delete_after = 5)
-
-
-async def start():
-	await client.start(os.environ.get('token'))
 
 asyncio.run(main = start())
