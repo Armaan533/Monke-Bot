@@ -30,7 +30,8 @@ class MyClient(commands.Bot):
 			command_prefix = get_prefix, 
 			intents = intent, 
 			activity = discord.Game(name="with servers", type=3), 
-			status = discord.Status.idle
+			status = discord.Status.idle,
+			case_insensitive = True
 		)
 
 	async def setup_hook(self) -> None:
@@ -75,9 +76,14 @@ async def on_member_join(member):
 # new, upgraded and personalized help command
 
 class MyHelp(commands.HelpCommand):
+	def get_command_signature(self, command):
+			return '%s%s %s' % (self.clean_prefix, command.qualified_name, command.signature)
+
 	async def send_bot_help(self, mapping):
+
 		helpEmbed = discord.Embed(title = "Commands",
 							  color = lgd.hexConvertor(mn.colorCollection.find({},{"_id":0,"Hex":1})))
+
 	#	Add more commands here
 
 		# helpEmbed.add_field(name="`ping`", value="Shows the latency of the bot | Utility\n Aliases | pong", inline=True)
@@ -88,18 +94,31 @@ class MyHelp(commands.HelpCommand):
 		# helpEmbed.add_field(name="`invite`", value="Gives an invite link of bot| Utility\n Aliases | invitebot", inline=True)
 		# helpEmbed.add_field(name="`nuke`", value="Deletes messages in bulk| Mod\n Aliases | None", inline=True)
 		# helpEmbed.add_field(name = "`prefix`", value = "Changes the prefix of bot to desired prefix| Utility\n Aliases | None")
-		# helpEmbed.set_footer(text=f"Requested by {self.context.author.name}", icon_url = self.context.author.avatar_url)
+		helpEmbed.set_footer(text=f"Requested by {self.context.author.name} | Use {self.clean_prefix}help <command> to get more info about the command", icon_url = self.context.author.avatar_url)
 
 		for cog, commands in mapping.items():
-			command_signatures = [self.get_command_signature(c) for c in commands]
+			filtered = await self.filter_commands(commands, sort=True)
+			command_signatures = [self.get_command_signature(c) for c in filtered]
 			if command_signatures:
 				cog_name = getattr(cog, "qualified_name", "No Category")
 				helpEmbed.add_field(name=cog_name, value="\n".join(command_signatures), inline=False)
 		
 		await self.context.reply(embed = helpEmbed)
 
+	async def send_command_help(self, command):
+		helpCommandEmbed = discord.Embed(
+			title = "Command Help",
+			color = lgd.hexConvertor(mn.colorCollection.find({},{"_id":0,"Hex":1}))
+		)
+		helpCommandEmbed.add_field(name="Help", value=command.help)
+		alias = command.aliases
+		if alias:
+			helpCommandEmbed.add_field(name="Aliases", value=", ".join(alias), inline=False)
+		
+		await self.context.reply(embed = helpCommandEmbed)
 
-@client.command(aliases = ["Prefix"])
+@client.command(help = "Changes the prefix of the bot for this guild")
+@commands.guild_only()
 @commands.has_guild_permissions(administrator = True)
 async def prefix(ctx, newPrefix: str):
 	if len(newPrefix) >= 5:
@@ -132,27 +151,28 @@ async def prefix_error(ctx: commands.Context, error: commands.errors):
 		)
 		await ctx.send(embed = missingArgEmbed)
 
-
-@client.command()
+@commands.is_owner()
+@client.command(help = "For enabling cogs")
 async def enable(ctx, *, cogname = None):
 	if cogname == None:
 		return
 	
 	try:
-		client.load_extension(cogname)
+		await client.load_extension(cogname)
 	except Exception as e:
 		await ctx.send(f'Could not load cog {cogname}: {str(e)}')
 
 	else:
 		await ctx.send('Enabled Commands Successfully')
 
-@client.command()
+@commands.is_owner()
+@client.command(help = "For disabling cogs")
 async def disable(ctx,*, cogname = None):
 	if cogname == None:
 		return
     
 	try:
-		client.unload_extension(cogname)
+		await client.unload_extension(cogname)
 	except Exception as e:
 		await ctx.send(f'Could not unload cog {cogname}: {str(e)}')
 
@@ -161,13 +181,13 @@ async def disable(ctx,*, cogname = None):
 
 # For checking bot latency
 
-@client.command(aliases = ["Ping","pong","Pong"])
+@client.command(help = "For checking the latensy of bot", aliases = ["pong"])
 async def ping(ctx):
 	pingem = discord.Embed(description = f"Pong! In {round(client.latency * 1000)}ms",
 						   color = lgd.hexConvertor(mn.colorCollection.find({},{"_id":0,"Hex":1})))
 	await ctx.send(embed=pingem)
 
-@client.command(aliases = ["Say"])
+@client.command(help = "Fun command used for impersonating as bot. :warning: Warning :warning: Do NOT use this for bad stuff")
 async def say(ctx, *, message = None):
 
 	if message == None:
@@ -193,7 +213,7 @@ async def say(ctx, *, message = None):
 		await ctx.send(embed = me2)
 
 
-@client.command(aliases = ["Invite","invitebot","Invitebot"])
+@client.command(help = "For getting the link to invite the bot to your own server", aliases = ["invitebot"])
 async def invite(ctx):
 	inviteEmbed = discord.Embed(title = "Invite bot!",
 								description = f"Click [here]({invlink}) to invite the bot",
@@ -216,7 +236,7 @@ async def on_message(message):
 			await message.channel.send(embed = mentionEmbed)
 	
 
-@client.command(aliases = ["Purge"])
+@client.command(help = "For deleting the mentioned amount of messages")
 @commands.has_guild_permissions(manage_messages = True)
 async def purge(ctx, limit: int):
 	await ctx.message.delete()
@@ -230,7 +250,7 @@ async def purge_error(ctx, error):
 										color = lgd.hexConvertor(mn.colorCollection.find({},{"_id":0,"Hex":1})))
 		await ctx.send(embed = missingpermEmbed)
 
-@client.command(aliases = ["Nuke"])
+@client.command(help = "For deleting large amount of messages in a channel")
 @commands.has_guild_permissions(administrator = True)
 async def nuke(ctx):
 	await ctx.message.delete()
@@ -246,7 +266,7 @@ async def nuke_error(ctx, error):
 		await ctx.send(embed = NukeErrorEmbed)
 
 
-@client.command(aliases = ["Kick"])
+@client.command(help = "For kicking members out of the server")
 @commands.has_guild_permissions(kick_members=True)
 async def kick(ctx, member: discord.Member, *kickReasonList):
 	if member.id == 823894464798916688:
@@ -282,7 +302,7 @@ async def kick_error(ctx, error):
 		await ctx.send(text)
 	
 
-@client.command()
+@client.command(help = "For banning members")
 @commands.has_guild_permissions(ban_members = True)
 async def ban(ctx, member: discord.Member, *banReasonList):
 
