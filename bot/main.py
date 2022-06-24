@@ -34,11 +34,11 @@ class MyClient(commands.Bot):
 		)
 
 	async def setup_hook(self) -> None:
-		await self.add_cog("cogs.channel")
-		await self.add_cog("cogs.logs")
-		await self.add_cog("cogs.serverinfo")
-		await self.add_cog("cogs.userinfo")
-		await self.add_cog("cogs.warn")
+		await self.load_extension("cogs.channel")
+		await self.load_extension("cogs.logs")
+		await self.load_extension("cogs.serverinfo")
+		await self.load_extension("cogs.userinfo")
+		await self.load_extension("cogs.warn")
 
 
 # Creating a bot instance
