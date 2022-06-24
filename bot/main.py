@@ -117,6 +117,9 @@ class MyHelp(commands.HelpCommand):
 		
 		await self.context.reply(embed = helpCommandEmbed)
 
+client.help_command = MyHelp()
+
+
 @client.command(help = "Changes the prefix of the bot for this guild")
 @commands.guild_only()
 @commands.has_guild_permissions(administrator = True)
@@ -353,5 +356,3 @@ async def start():
 	
 
 asyncio.run(start())
-
-print("Test", file = sys.stderr)
