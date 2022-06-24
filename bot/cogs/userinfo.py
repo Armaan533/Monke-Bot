@@ -12,7 +12,7 @@ class Userinfo(commands.Cog):
     def __init__(self, client):
         self.client = client
 
-    @commands.command(aliases = ["Userinfo","Memberinfo"])
+    @commands.command(help = "For getting information about the user/member", aliases = ["Memberinfo"])
     async def userinfo(self, ctx: commands.Context, member: str = None):
         if member == None:
             id = ctx.author.id

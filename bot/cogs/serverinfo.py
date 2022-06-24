@@ -11,7 +11,7 @@ class serverinfo(commands.Cog):
     def __init__(self, client):
         self.client = client
 
-    @commands.command()
+    @commands.command(help = "For getting info about this server")
     async def serverinfo(self, ctx: commands.Context):
         guild = ctx.guild
         serverInfoEmbed = discord.Embed(

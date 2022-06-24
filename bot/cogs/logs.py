@@ -8,7 +8,9 @@ class Logs(commands.Cog):
 	def __init__(self, client):
 		self.client = client
 
-	@commands.command()
+	@commands.guild_only()
+	@commands.has_guild_permissions(administrator = True)
+	@commands.command(help = "To set a channel as a log channel")
 	async def setlogChannel(self, ctx):
 		logChannelEmbed = discord.Embed(description = "Mention the channel",
 										   color = lgd.hexConvertor(mn.colorCollection.find({},{"_id":0,"Hex":1})))

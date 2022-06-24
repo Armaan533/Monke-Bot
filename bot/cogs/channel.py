@@ -9,6 +9,7 @@ class Channel(commands.Cog):
 
 		self.client = client
 
+	@commands.has_guild_permissions(administrator = True)
 	@commands.command()
 	async def lock(self, ctx):
 		everyoneRole = discord.utils.get(ctx.guild.roles, name = "@everyone")

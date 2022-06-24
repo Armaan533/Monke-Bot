@@ -12,6 +12,7 @@ class warn(commands.Cog):
     def __init__(self, client: discord.Client):
         self.client = client
 
+    @commands.has_guild_permissions(administrator = True)
     @commands.command()
     async def warn(self, ctx, member: discord.Member, *reasonList):
 
@@ -71,6 +72,7 @@ class warn(commands.Cog):
             if warnpunishdoc != None:
                 print(warnpunishdoc)
 
+    @commands.has_guild_permissions(administrator = True)
     @commands.command()
     async def warn_remove(self, ctx : commands.Context, member: discord.Member, number: int):
         warnsDoc = mn.warncollection.find_one({"_id": str(member.id), "guild": ctx.guild.id},{"_id": 0, "warns": 1})
@@ -102,7 +104,7 @@ class warn(commands.Cog):
             )
             await ctx.reply(embed = warnsRemovedEmbed)
 
-        
+    @commands.has_guild_permissions(administrator = True)
     @commands.command()
     async def set_warn_punishment(self, ctx: commands.Context):
         punishList = []
