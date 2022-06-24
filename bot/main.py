@@ -31,7 +31,8 @@ class MyClient(commands.Bot):
 			intents = intent, 
 			activity = discord.Game(name="with servers", type=3), 
 			status = discord.Status.idle,
-			case_insensitive = True
+			case_insensitive = True,
+			help_command = MyHelp()
 		)
 
 	async def setup_hook(self) -> None:
@@ -103,6 +104,7 @@ class MyHelp(commands.HelpCommand):
 				cog_name = getattr(cog, "qualified_name", "No Category")
 				helpEmbed.add_field(name=cog_name, value="\n".join(command_signatures), inline=False)
 		
+		print("stuff works")
 		await self.context.reply(embed = helpEmbed)
 
 	async def send_command_help(self, command):
@@ -117,7 +119,6 @@ class MyHelp(commands.HelpCommand):
 		
 		await self.context.reply(embed = helpCommandEmbed)
 
-client.help_command = MyHelp()
 
 
 @client.command(help = "Changes the prefix of the bot for this guild")
