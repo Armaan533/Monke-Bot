@@ -46,7 +46,7 @@ client = MyClient()
 
 # Deleting inbuilt help command
 
-
+client.remove_command("help")
 
 # this will get called when bot joins a guild
 
