@@ -25,7 +25,7 @@ def get_prefix(client, message: discord.Message):
 
 
 class MyClient(commands.Bot):
-	def __init__() -> None:
+	def __init__(self) -> None:
 		super().__init__(
 			command_prefix = get_prefix, 
 			intents = intent, 
