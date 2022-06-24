@@ -44,10 +44,6 @@ class MyClient(commands.Bot):
 # Creating a bot instance
 client = MyClient()
 
-# Deleting inbuilt help command
-
-client.remove_command("help")
-
 # this will get called when bot joins a guild
 
 @client.event
@@ -78,23 +74,30 @@ async def on_member_join(member):
 
 # new, upgraded and personalized help command
 
-@client.command(aliases = ["Help","helpme","Helpme"])
-async def help(ctx):
-	helpEmbed = discord.Embed(title = "Commands",
+class MyHelp(commands.HelpCommand):
+	async def send_bot_help(self, mapping):
+		helpEmbed = discord.Embed(title = "Commands",
 							  color = lgd.hexConvertor(mn.colorCollection.find({},{"_id":0,"Hex":1})))
 	#	Add more commands here
 
-	helpEmbed.add_field(name="`ping`", value="Shows the latency of the bot | Utility\n Aliases | pong", inline=True)
-	helpEmbed.add_field(name="`purge`", value="Deletes a specified number of messages | Utility\n Aliases | None", inline=True)
-	helpEmbed.add_field(name="`ban`", value="Bans a member  | Mod\n Aliases | None", inline=True)
-	helpEmbed.add_field(name="`unban`", value="Unbans a member  | Mod\n Aliases | None", inline=True)
-	helpEmbed.add_field(name="`say`", value="Make bot say something for you| Utility\n Aliases | None", inline=True)
-	helpEmbed.add_field(name="`invite`", value="Gives an invite link of bot| Utility\n Aliases | invitebot", inline=True)
-	helpEmbed.add_field(name="`nuke`", value="Deletes messages in bulk| Mod\n Aliases | None", inline=True)
-	helpEmbed.add_field(name = "`prefix`", value = "Changes the prefix of bot to desired prefix| Utility\n Aliases | None")
-	helpEmbed.set_footer(text=f"Requested by {ctx.author.name}", icon_url = ctx.author.avatar_url)
+		# helpEmbed.add_field(name="`ping`", value="Shows the latency of the bot | Utility\n Aliases | pong", inline=True)
+		# helpEmbed.add_field(name="`purge`", value="Deletes a specified number of messages | Utility\n Aliases | None", inline=True)
+		# helpEmbed.add_field(name="`ban`", value="Bans a member  | Mod\n Aliases | None", inline=True)
+		# helpEmbed.add_field(name="`unban`", value="Unbans a member  | Mod\n Aliases | None", inline=True)
+		# helpEmbed.add_field(name="`say`", value="Make bot say something for you| Utility\n Aliases | None", inline=True)
+		# helpEmbed.add_field(name="`invite`", value="Gives an invite link of bot| Utility\n Aliases | invitebot", inline=True)
+		# helpEmbed.add_field(name="`nuke`", value="Deletes messages in bulk| Mod\n Aliases | None", inline=True)
+		# helpEmbed.add_field(name = "`prefix`", value = "Changes the prefix of bot to desired prefix| Utility\n Aliases | None")
+		# helpEmbed.set_footer(text=f"Requested by {self.context.author.name}", icon_url = self.context.author.avatar_url)
 
-	await ctx.send(embed = helpEmbed)
+		for cog, commands in mapping.items():
+			command_signatures = [self.get_command_signature(c) for c in commands]
+			if command_signatures:
+				cog_name = getattr(cog, "qualified_name", "No Category")
+				helpEmbed.add_field(name=cog_name, value="\n".join(command_signatures), inline=False)
+		
+		await self.context.reply(embed = helpEmbed)
+
 
 @client.command(aliases = ["Prefix"])
 @commands.has_guild_permissions(administrator = True)
