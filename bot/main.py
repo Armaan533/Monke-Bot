@@ -24,6 +24,50 @@ def get_prefix(client, message: discord.Message):
 	return commands.when_mentioned_or(Gprefix)(client, message)
 
 
+class MyHelp(commands.HelpCommand):
+	def get_command_signature(self, command):
+			return '%s%s %s' % (self.clean_prefix, command.qualified_name, command.signature)
+
+	async def send_bot_help(self, mapping):
+
+		helpEmbed = discord.Embed(title = "Commands",
+							  color = lgd.hexConvertor(mn.colorCollection.find({},{"_id":0,"Hex":1})))
+
+	#	Add more commands here
+
+		# helpEmbed.add_field(name="`ping`", value="Shows the latency of the bot | Utility\n Aliases | pong", inline=True)
+		# helpEmbed.add_field(name="`purge`", value="Deletes a specified number of messages | Utility\n Aliases | None", inline=True)
+		# helpEmbed.add_field(name="`ban`", value="Bans a member  | Mod\n Aliases | None", inline=True)
+		# helpEmbed.add_field(name="`unban`", value="Unbans a member  | Mod\n Aliases | None", inline=True)
+		# helpEmbed.add_field(name="`say`", value="Make bot say something for you| Utility\n Aliases | None", inline=True)
+		# helpEmbed.add_field(name="`invite`", value="Gives an invite link of bot| Utility\n Aliases | invitebot", inline=True)
+		# helpEmbed.add_field(name="`nuke`", value="Deletes messages in bulk| Mod\n Aliases | None", inline=True)
+		# helpEmbed.add_field(name = "`prefix`", value = "Changes the prefix of bot to desired prefix| Utility\n Aliases | None")
+		helpEmbed.set_footer(text=f"Requested by {self.context.author.name} | Use {self.clean_prefix}help <command> to get more info about the command", icon_url = self.context.author.avatar_url)
+
+		for cog, commands in mapping.items():
+			filtered = await self.filter_commands(commands, sort=True)
+			command_signatures = [self.get_command_signature(c) for c in filtered]
+			if command_signatures:
+				cog_name = getattr(cog, "qualified_name", "No Category")
+				helpEmbed.add_field(name=cog_name, value="\n".join(command_signatures), inline=False)
+		
+		print("stuff works")
+		await self.context.reply(embed = helpEmbed)
+
+	async def send_command_help(self, command):
+		helpCommandEmbed = discord.Embed(
+			title = "Command Help",
+			color = lgd.hexConvertor(mn.colorCollection.find({},{"_id":0,"Hex":1}))
+		)
+		helpCommandEmbed.add_field(name="Help", value=command.help)
+		alias = command.aliases
+		if alias:
+			helpCommandEmbed.add_field(name="Aliases", value=", ".join(alias), inline=False)
+		
+		await self.context.reply(embed = helpCommandEmbed)
+
+
 class MyClient(commands.Bot):
 	def __init__(self) -> None:
 		super().__init__(
@@ -75,49 +119,6 @@ async def on_member_join(member):
 		await member.add_roles(role)
 
 # new, upgraded and personalized help command
-
-class MyHelp(commands.HelpCommand):
-	def get_command_signature(self, command):
-			return '%s%s %s' % (self.clean_prefix, command.qualified_name, command.signature)
-
-	async def send_bot_help(self, mapping):
-
-		helpEmbed = discord.Embed(title = "Commands",
-							  color = lgd.hexConvertor(mn.colorCollection.find({},{"_id":0,"Hex":1})))
-
-	#	Add more commands here
-
-		# helpEmbed.add_field(name="`ping`", value="Shows the latency of the bot | Utility\n Aliases | pong", inline=True)
-		# helpEmbed.add_field(name="`purge`", value="Deletes a specified number of messages | Utility\n Aliases | None", inline=True)
-		# helpEmbed.add_field(name="`ban`", value="Bans a member  | Mod\n Aliases | None", inline=True)
-		# helpEmbed.add_field(name="`unban`", value="Unbans a member  | Mod\n Aliases | None", inline=True)
-		# helpEmbed.add_field(name="`say`", value="Make bot say something for you| Utility\n Aliases | None", inline=True)
-		# helpEmbed.add_field(name="`invite`", value="Gives an invite link of bot| Utility\n Aliases | invitebot", inline=True)
-		# helpEmbed.add_field(name="`nuke`", value="Deletes messages in bulk| Mod\n Aliases | None", inline=True)
-		# helpEmbed.add_field(name = "`prefix`", value = "Changes the prefix of bot to desired prefix| Utility\n Aliases | None")
-		helpEmbed.set_footer(text=f"Requested by {self.context.author.name} | Use {self.clean_prefix}help <command> to get more info about the command", icon_url = self.context.author.avatar_url)
-
-		for cog, commands in mapping.items():
-			filtered = await self.filter_commands(commands, sort=True)
-			command_signatures = [self.get_command_signature(c) for c in filtered]
-			if command_signatures:
-				cog_name = getattr(cog, "qualified_name", "No Category")
-				helpEmbed.add_field(name=cog_name, value="\n".join(command_signatures), inline=False)
-		
-		print("stuff works")
-		await self.context.reply(embed = helpEmbed)
-
-	async def send_command_help(self, command):
-		helpCommandEmbed = discord.Embed(
-			title = "Command Help",
-			color = lgd.hexConvertor(mn.colorCollection.find({},{"_id":0,"Hex":1}))
-		)
-		helpCommandEmbed.add_field(name="Help", value=command.help)
-		alias = command.aliases
-		if alias:
-			helpCommandEmbed.add_field(name="Aliases", value=", ".join(alias), inline=False)
-		
-		await self.context.reply(embed = helpCommandEmbed)
 
 
 
