@@ -40,8 +40,8 @@ class Logs(commands.Cog):
 			logChannel = discord.utils.get(member.guild.text_channels, id = int(mn.guildpref.find_one({"_id": str(member.guild.id)},{"_id":0,"Logs":1})["Logs"]))
 			memberjoinLogEmbed = discord.Embed(
 				title = "**Member Joined**",
-				description = f"{member.mention} joined\n**Account Creation**\n<t:{createtimestamp}:F>",
-				timestamp = datetime.utcnow()
+				description = f"{member.mention} joined\n**Account Creation**\n<t:{int(createtimestamp)}:F>",
+				timestamp = discord.utils.utcnow()
 			)
 			memberjoinLogEmbed.set_footer(text = "\u200b")
 			await logChannel.send(embed = memberjoinLogEmbed)
@@ -57,7 +57,8 @@ class Logs(commands.Cog):
 			memberleaveLogEmbed = discord.Embed(
 				title = "**Member Left**",
 				description = f"{member.mention} left",
-				timestamp = datetime.utcnow()
+				timestamp = discord.utils.utcnow(),
+				color = lgd.hexConvertor(mn.colorCollection.find({},{"_id":0,"Hex":1}))
 			)
 			memberleaveLogEmbed.set_footer(text = "\u200b")
 			memberleaveLogEmbed.set_thumbnail(url = member.avatar_url)
@@ -84,7 +85,7 @@ class Logs(commands.Cog):
 				cachemessagedeleteEmbed = discord.Embed(
 					title = f"Message Deleted By {deleter.name}#{deleter.discriminator}",
 					description = "",
-					timestamp = datetime.utcnow(),
+					timestamp = discord.utils.utcnow(),
 					color = lgd.hexConvertor(mn.colorCollection.find({},{"_id":0,"Hex":1}))
 				)
 				cachemessagedeleteEmbed.set_footer(text = f"ID:{message.id}")
@@ -109,7 +110,7 @@ class Logs(commands.Cog):
 				if message.content != "":
 					cachemessagedeleteEmbed.add_field(
 						name = "Message Content",
-						value = f"```{message.content}```",
+						value = f"```{message.clean_content}```",
 						inline = False
 					)
 
@@ -118,23 +119,23 @@ class Logs(commands.Cog):
 				noCacheMessageDeleteEmbed = discord.Embed(
 					title = "Message Deleted",
 					description = f"Message Content not available\nChannel: {msgchannel.mention}",
-					timestamp = datetime.utcnow(),
+					timestamp = discord.utils.utcnow(),
 					color = lgd.hexConvertor(mn.colorCollection.find({},{"_id":0, "Hex": 1}))
 				)
 				noCacheMessageDeleteEmbed.set_footer(text = f"ID: {payload.message_id}")
 
 				await logchannel.send(embed = noCacheMessageDeleteEmbed)
 
-	@commands.Cog.listener()
-	async def on_raw_bulk_message_delete(self, payload: discord.RawBulkMessageDeleteEvent):
-		if mn.guildpref.find_one({"_id":str(payload.guild_id)},{"_id":0,"Logs":1})["Logs"] == False:
-			pass
-		else:
-			Memberguild = self.client.get_guild(payload.guild_id)
-			logchannel = discord.utils.get(Memberguild.text_channels, id = int(mn.guildpref.find_one({"_id": str(payload.guild_id)},{"_id":0,"Logs":1})["Logs"]))
+	# @commands.Cog.listener()
+	# async def on_raw_bulk_message_delete(self, payload: discord.RawBulkMessageDeleteEvent):
+	# 	if mn.guildpref.find_one({"_id":str(payload.guild_id)},{"_id":0,"Logs":1})["Logs"] == False:
+	# 		pass
+	# 	else:
+	# 		Memberguild = self.client.get_guild(payload.guild_id)
+	# 		logchannel = discord.utils.get(Memberguild.text_channels, id = int(mn.guildpref.find_one({"_id": str(payload.guild_id)},{"_id":0,"Logs":1})["Logs"]))
 
-			async for entry in Memberguild.audit_logs(limit = 1, action = discord.AuditLogAction.message_bulk_delete):
-				deleter = entry.user
+	# 		async for entry in Memberguild.audit_logs(limit = 1, action = discord.AuditLogAction.message_bulk_delete):
+	# 			deleter = entry.user
 
 			
 			
