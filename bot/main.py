@@ -25,8 +25,13 @@ def get_prefix(client, message: discord.Message):
 
 
 class MyClient(commands.Bot):
-	def __init__(*args, **kwargs) -> None:
-		super().__init__(*args, **kwargs)
+	def __init__() -> None:
+		super().__init__(
+			command_prefix = get_prefix, 
+			intents = intent, 
+			activity = discord.Game(name="with servers", type=3), 
+			status = discord.Status.idle
+		)
 
 	async def setup_hook(self) -> None:
 		await self.add_cog("cogs.channel")
@@ -37,7 +42,7 @@ class MyClient(commands.Bot):
 
 
 # Creating a bot instance
-client = MyClient(command_prefix = get_prefix, intents = intent, activity = discord.Game(name="with servers", type=3), status = discord.Status.idle)
+client = MyClient()
 
 # Deleting inbuilt help command
 
