@@ -1,6 +1,7 @@
 import asyncio
 import os
 import discord
+from discord import app_commands
 from discord.ext import commands
 import logical_definitions as lgd
 import mongo_declaration as mn
@@ -11,20 +12,35 @@ intent = discord.Intents.default()
 intent.members = True
 intent.message_content = True
 
+#invite link for invite command
+
+invlink = 'https://discord.com/api/oauth2/authorize?client_id=860161020681388093&permissions=8&scope=bot'
+
 defaultPrefix = "+"
+
 
 def get_prefix(client, message: discord.Message):
 	Gprefix: str = mn.guildpref.find_one({"_id": str(message.guild.id)},{"_id": 0,"Prefix": 1})["Prefix"]
 	return commands.when_mentioned_or(Gprefix)(client, message)
 
+
+class MyClient(commands.Bot):
+	def __init__(*args, **kwargs) -> None:
+		super().__init__(*args, **kwargs)
+
+	async def setup_hook(self) -> None:
+		await self.add_cog("cogs.channel")
+		await self.add_cog("cogs.logs")
+		await self.add_cog("cogs.serverinfo")
+		await self.add_cog("cogs.userinfo")
+		await self.add_cog("cogs.warn")
+
+
 # Creating a bot instance
-client = commands.Bot(command_prefix = get_prefix, intents = intent)
+client = MyClient(command_prefix = get_prefix, intents = intent, activity = discord.Game(name="with servers", type=3), status = discord.Status.idle)
 
 # Deleting inbuilt help command
-client.remove_command('help')
 
-#invite link for invite command
-invlink = 'https://discord.com/api/oauth2/authorize?client_id=860161020681388093&permissions=8&scope=bot'
 
 
 # this will get called when bot joins a guild
@@ -41,8 +57,6 @@ async def on_guild_remove(guild):
 #this will get called when bot is online
 @client.event
 async def on_ready():
-	activity = discord.Game(name="with servers", type=3)
-	await client.change_presence(status=discord.Status.idle, activity=activity)
 	print("We are online!")
 
 @client.event
@@ -305,18 +319,11 @@ async def ban_error(ctx, error):
 											color = lgd.hexConvertor(mn.colorCollection.find({},{"_id":0,"Hex":1})))
 		await ctx.send(embed = banUserNotFoundEmbed)
 
-@client.event()
-async def setup_hook():
-	await client.load_extension("cogs.channel")
-	await client.load_extension("cogs.warn")
-	await client.load_extension("cogs.serverinfo")
-	await client.load_extension("cogs.userinfo")
-	await client.load_extension("cogs.logs")
 
 async def start():
 	await client.start(os.environ.get('token'))
 	
 
-asyncio.run(main = start())
+asyncio.run(start())
 
 print("Test", file = sys.stderr)
