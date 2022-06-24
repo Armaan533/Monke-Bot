@@ -75,8 +75,7 @@ class MyClient(commands.Bot):
 			intents = intent, 
 			activity = discord.Game(name="with servers", type=3), 
 			status = discord.Status.idle,
-			case_insensitive = True,
-			help_command = MyHelp()
+			case_insensitive = True
 		)
 
 	async def setup_hook(self) -> None:
@@ -89,6 +88,8 @@ class MyClient(commands.Bot):
 
 # Creating a bot instance
 client = MyClient()
+
+client.help_command = MyHelp()
 
 # this will get called when bot joins a guild
 
