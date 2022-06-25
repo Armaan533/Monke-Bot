@@ -3,14 +3,32 @@ import discord
 import logical_definitions as lgd
 import mongo_declaration as mn
 from discord.ext import commands
-
+import traceback, sys
 
 async def setup(client):
-    await client.add_cog(warn(client))
+    await client.add_cog(Admin(client))
 
-class warn(commands.Cog):
+class Admin(commands.Cog):
     def __init__(self, client: discord.Client):
         self.client = client
+
+    @commands.has_guild_permissions(administrator = True)
+    @commands.command()
+    async def lock(self, ctx):
+        everyoneRole = discord.utils.get(ctx.guild.roles, name = "@everyone")
+        await ctx.channel.set_permissions(everyoneRole, read_messages=True, send_messages=False)
+        await ctx.send(embed = discord.Embed(description = "Channel locked successfully",
+											color = lgd.hexConvertor(mn.colorCollection.find({},{"_id":0,"Hex":1}))))
+
+
+    @commands.has_guild_permissions(administrator = True)
+    @commands.command()
+    async def unlock(self, ctx):
+        everyoneRole = discord.utils.get(ctx.guild.roles, name = "@everyone")
+        await ctx.channel.set_permissions(everyoneRole, send_messages = True)
+        await ctx.send(embed = discord.Embed(description = "Channel unlocked successfully",
+											color = lgd.hexConvertor(mn.colorCollection.find({},{"_id":0,"Hex":1}))))
+
 
     @commands.has_guild_permissions(administrator = True)
     @commands.command()
@@ -173,3 +191,139 @@ class warn(commands.Cog):
             color = lgd.hexConvertor(mn.colorCollection.find({},{"_id": 0, "Hex": 1}))
         )
         await ctx.send(embed = punishmentSuccessEmbed)
+
+    @commands.command(help = "For deleting the mentioned amount of messages")
+    @commands.has_guild_permissions(manage_messages = True)
+    async def purge(self, ctx, limit: int):
+        await ctx.message.delete()
+        await ctx.channel.purge(limit=limit)
+
+    @purge.error
+    async def purge_error(ctx, error):
+        if isinstance(error, commands.MissingPermissions):
+            missingpermEmbed = discord.Embed(title = "No permission",
+										description = "You can't purge because you don't have manage messages permission",
+										color = lgd.hexConvertor(mn.colorCollection.find({},{"_id":0,"Hex":1})))
+            await ctx.send(embed = missingpermEmbed)
+        else:
+            print('Ignoring exception in command {}:'.format(ctx.command), file=sys.stderr)
+            traceback.print_exception(type(error), error, error.__traceback__, file=sys.stderr)
+
+    @commands.command(help = "For deleting large amount of messages in a channel")
+    @commands.has_guild_permissions(administrator = True)
+    async def nuke(self, ctx):
+        await ctx.message.delete()
+        limit = 10000
+        await ctx.channel.purge(limit = limit)
+    
+    @nuke.error
+    async def nuke_error(ctx, error):
+        if isinstance(error, commands.MissingPermissions):
+            NukeErrorEmbed = discord.Embed(title = "No Permission to do that",
+									   description = "You can't nuke this channel because you don't have required permissions",
+									   color = lgd.hexConvertor(mn.colorCollection.find({},{"_id":0,"Hex":1})))
+            await ctx.send(embed = NukeErrorEmbed)
+
+
+    @commands.command(help = "For kicking members out of the server")
+    @commands.has_guild_permissions(kick_members=True)
+    async def kick(self, ctx, member: discord.Member, *kickReasonList):
+        if member.id == 823894464798916688:
+            devBanEmbed = discord.Embed(
+			    title = "Denied :octagonal_sign:",
+			    description = "You can't kick developer of this bot",
+			    color = lgd.hexConvertor(mn.colorCollection.find({},{"_id":0,"Hex":1}))
+		    )
+            await ctx.reply(embed = devBanEmbed)
+        else:
+            if len(kickReasonList) != 0:
+                kickReason = ""
+                for i in kickReasonList:
+                    kickReason = kickReason + i + " "
+            else:
+                kickReason = None
+
+            await member.kick(reason =  kickReason)
+            if kickReason != None:
+                SuccessKickEmbed = discord.Embed(title="Successful",
+											description=f"Successfully kicked {member.name} for {kickReason}",
+											color=lgd.hexConvertor(mn.colorCollection.find({},{"_id":0,"Hex":1})))
+            else:
+                SuccessKickEmbed = discord.Embed(title="Successful",
+											description=f"Successfully kicked {member.name}",
+											color=lgd.hexConvertor(mn.colorCollection.find({},{"_id":0,"Hex":1})))
+            await ctx.send(embed = SuccessKickEmbed)
+
+    @kick.error
+    async def kick_error(ctx, error):
+        if isinstance(error, commands.MissingPermissions):
+            text = "Sorry {}, you do not have permissions to do that!".format(ctx.message.author)
+            await ctx.send(text)
+	
+
+    @commands.command(help = "For banning members")
+    @commands.has_guild_permissions(ban_members = True)
+    async def ban(self, ctx, member: discord.Member, *banReasonList):
+
+        if member.id == 823894464798916688:
+            devBanEmbed = discord.Embed(
+			    title = "Denied :octagonal_sign:",
+			    description = "You can't ban developer of this bot",
+			    color = lgd.hexConvertor(mn.colorCollection.find({},{"_id":0,"Hex":1}))
+		    )
+            await ctx.reply(embed = devBanEmbed)
+        else:
+            if len(banReasonList) != 0:
+                banReason = ""
+                for i in banReasonList:
+                    banReason = banReason + i + " "
+            else:
+                banReason = None
+		
+            await member.ban(reason = banReason)
+            if banReason != None:	
+                SuccessBanEmbed = discord.Embed(
+                    title="Successful",
+				    description=f"Successfully banned {member.name} for {banReason}",
+				    color=lgd.hexConvertor(mn.colorCollection.find({},{"_id":0,"Hex":1})))
+            else:
+                SuccessBanEmbed = discord.Embed(title="Successful",
+											description=f"Successfully banned {member.name}",
+											color=lgd.hexConvertor(mn.colorCollection.find({},{"_id":0,"Hex":1})))
+            await ctx.send(embed = SuccessBanEmbed)
+
+    @ban.error
+    async def ban_error(ctx, error):
+        if isinstance(error, commands.MissingPermissions):
+            MissingPermsEmbed = discord.Embed(
+			    title = "Error",
+			    description = "What are you trying to do?\nYou can't ban that sucker because you don't have permissions to do that!",
+			    color = lgd.hexConvertor(mn.colorCollection.find({},{"_id":0,"Hex":1})))
+            await ctx.send(embed = MissingPermsEmbed)
+        elif isinstance(error, commands.UserNotFound):
+            banUserNotFoundEmbed = discord.Embed(title = "User not found",
+											description = "try checking the id and discriminant of user again",
+											color = lgd.hexConvertor(mn.colorCollection.find({},{"_id":0,"Hex":1})))
+            await ctx.send(embed = banUserNotFoundEmbed)
+
+    @commands.guild_only()
+    @commands.has_guild_permissions(administrator = True)
+    @commands.command(help = "To set a channel as a log channel")
+    async def setlogChannel(self, ctx):
+        logChannelEmbed = discord.Embed(description = "Mention the channel",
+										   color = lgd.hexConvertor(mn.colorCollection.find({},{"_id":0,"Hex":1})))
+        logMessage = await ctx.send(embed = logChannelEmbed)
+        try:
+            authorcheck = lambda m: m.author == ctx.author and m.channel == ctx.channel
+            name = await self.client.wait_for("message", check = authorcheck, timeout = 30)
+        except asyncio.exceptions.TimeoutError:
+            await logMessage.edit(embed = discord.Embed(description = "timed out",
+														color = lgd.hexConvertor(mn.colorCollection.find({},{"_id":0,"Hex":1}))),
+								  delete_after = 10)
+            return
+        await name.delete()
+        mn.guildpref.update_one({"_id":str(ctx.guild.id)},{"$set":{"Logs":name.content.lstrip("<#").rstrip(">")}})
+        await logMessage.edit(embed = discord.Embed(
+			description = "Log channel added successfully",
+			color = lgd.hexConvertor(mn.colorCollection.find({},{"_id":0,"Hex":1}))
+		))

@@ -49,7 +49,7 @@ class MyHelp(commands.HelpCommand):
 			filtered = await self.filter_commands(commands, sort=True)
 			command_signatures = [self.get_command_signature(c) for c in filtered]
 			if command_signatures:
-				cog_name = getattr(cog, "qualified_name", "No Category")
+				cog_name = getattr(cog, "qualified_name", "Bot-related")
 				helpEmbed.add_field(name=cog_name, value="\n".join(command_signatures), inline=False)
 		
 		print("stuff works")
@@ -79,11 +79,9 @@ class MyClient(commands.Bot):
 		)
 
 	async def setup_hook(self) -> None:
-		await self.load_extension("cogs.channel")
 		await self.load_extension("cogs.logs")
-		await self.load_extension("cogs.serverinfo")
-		await self.load_extension("cogs.userinfo")
-		await self.load_extension("cogs.warn")
+		await self.load_extension("cogs.info")
+		await self.load_extension("cogs.admin")
 
 
 # Creating a bot instance
@@ -254,118 +252,6 @@ async def on_message(message):
 										 color = lgd.hexConvertor(mn.colorCollection.find({},{"_id":0,"Hex":1})))
 			await message.channel.send(embed = mentionEmbed)
 	
-
-@client.command(help = "For deleting the mentioned amount of messages")
-@commands.has_guild_permissions(manage_messages = True)
-async def purge(ctx, limit: int):
-	await ctx.message.delete()
-	await ctx.channel.purge(limit=limit)
-
-@purge.error
-async def purge_error(ctx, error):
-	if isinstance(error, commands.MissingPermissions):
-		missingpermEmbed = discord.Embed(title = "No permission",
-										description = "You can't purge because you don't have manage messages permission",
-										color = lgd.hexConvertor(mn.colorCollection.find({},{"_id":0,"Hex":1})))
-		await ctx.send(embed = missingpermEmbed)
-
-@client.command(help = "For deleting large amount of messages in a channel")
-@commands.has_guild_permissions(administrator = True)
-async def nuke(ctx):
-	await ctx.message.delete()
-	limit = 10000
-	await ctx.channel.purge(limit = limit)
-    
-@nuke.error
-async def nuke_error(ctx, error):
-	if isinstance(error, commands.MissingPermissions):
-		NukeErrorEmbed = discord.Embed(title = "No Permission to do that",
-									   description = "You can't nuke this channel because you don't have required permissions",
-									   color = lgd.hexConvertor(mn.colorCollection.find({},{"_id":0,"Hex":1})))
-		await ctx.send(embed = NukeErrorEmbed)
-
-
-@client.command(help = "For kicking members out of the server")
-@commands.has_guild_permissions(kick_members=True)
-async def kick(ctx, member: discord.Member, *kickReasonList):
-	if member.id == 823894464798916688:
-		devBanEmbed = discord.Embed(
-			title = "Denied :octagonal_sign:",
-			description = "You can't kick developer of this bot",
-			color = lgd.hexConvertor(mn.colorCollection.find({},{"_id":0,"Hex":1}))
-		)
-		await ctx.reply(embed = devBanEmbed)
-	else:
-		if len(kickReasonList) != 0:
-			kickReason = ""
-			for i in kickReasonList:
-				kickReason = kickReason + i + " "
-		else:
-			kickReason = None
-
-		await member.kick(reason =  kickReason)
-		if kickReason != None:
-			SuccessKickEmbed = discord.Embed(title="Successful",
-											description=f"Successfully kicked {member.name} for {kickReason}",
-											color=lgd.hexConvertor(mn.colorCollection.find({},{"_id":0,"Hex":1})))
-		else:
-			SuccessKickEmbed = discord.Embed(title="Successful",
-											description=f"Successfully kicked {member.name}",
-											color=lgd.hexConvertor(mn.colorCollection.find({},{"_id":0,"Hex":1})))
-		await ctx.send(embed = SuccessKickEmbed)
-
-@kick.error
-async def kick_error(ctx, error):
-	if isinstance(error, commands.MissingPermissions):
-		text = "Sorry {}, you do not have permissions to do that!".format(ctx.message.author)
-		await ctx.send(text)
-	
-
-@client.command(help = "For banning members")
-@commands.has_guild_permissions(ban_members = True)
-async def ban(ctx, member: discord.Member, *banReasonList):
-
-	if member.id == 823894464798916688:
-		devBanEmbed = discord.Embed(
-			title = "Denied :octagonal_sign:",
-			description = "You can't ban developer of this bot",
-			color = lgd.hexConvertor(mn.colorCollection.find({},{"_id":0,"Hex":1}))
-		)
-		await ctx.reply(embed = devBanEmbed)
-	else:
-		if len(banReasonList) != 0:
-			banReason = ""
-			for i in banReasonList:
-				banReason = banReason + i + " "
-		else:
-			banReason = None
-		
-		await member.ban(reason = banReason)
-		if banReason != None:	
-			SuccessBanEmbed = discord.Embed(
-				title="Successful",
-				description=f"Successfully banned {member.name} for {banReason}",
-				color=lgd.hexConvertor(mn.colorCollection.find({},{"_id":0,"Hex":1})))
-		else:
-			SuccessBanEmbed = discord.Embed(title="Successful",
-											description=f"Successfully banned {member.name}",
-											color=lgd.hexConvertor(mn.colorCollection.find({},{"_id":0,"Hex":1})))
-		await ctx.send(embed = SuccessBanEmbed)
-
-@ban.error
-async def ban_error(ctx, error):
-	if isinstance(error, commands.MissingPermissions):
-		MissingPermsEmbed = discord.Embed(
-			title = "Error",
-			description = "What are you trying to do?\nYou can't ban that sucker because you don't have permissions to do that!",
-			color = lgd.hexConvertor(mn.colorCollection.find({},{"_id":0,"Hex":1})))
-		await ctx.send(embed = MissingPermsEmbed)
-	elif isinstance(error, commands.UserNotFound):
-		banUserNotFoundEmbed = discord.Embed(title = "User not found",
-											description = "try checking the id and discriminant of user again",
-											color = lgd.hexConvertor(mn.colorCollection.find({},{"_id":0,"Hex":1})))
-		await ctx.send(embed = banUserNotFoundEmbed)
-
 
 async def start():
 	await client.start(os.environ.get('token'))

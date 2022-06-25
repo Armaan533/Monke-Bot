@@ -7,28 +7,6 @@ from datetime import datetime
 class Logs(commands.Cog):
 	def __init__(self, client):
 		self.client = client
-
-	@commands.guild_only()
-	@commands.has_guild_permissions(administrator = True)
-	@commands.command(help = "To set a channel as a log channel")
-	async def setlogChannel(self, ctx):
-		logChannelEmbed = discord.Embed(description = "Mention the channel",
-										   color = lgd.hexConvertor(mn.colorCollection.find({},{"_id":0,"Hex":1})))
-		logMessage = await ctx.send(embed = logChannelEmbed)
-		try:
-			authorcheck = lambda m: m.author == ctx.author and m.channel == ctx.channel
-			name = await self.client.wait_for("message", check = authorcheck, timeout = 30)
-		except asyncio.exceptions.TimeoutError:
-			await logMessage.edit(embed = discord.Embed(description = "timed out",
-														color = lgd.hexConvertor(mn.colorCollection.find({},{"_id":0,"Hex":1}))),
-								  delete_after = 10)
-			return
-		await name.delete()
-		mn.guildpref.update_one({"_id":str(ctx.guild.id)},{"$set":{"Logs":name.content.lstrip("<#").rstrip(">")}})
-		await logMessage.edit(embed = discord.Embed(
-			description = "Log channel added successfully",
-			color = lgd.hexConvertor(mn.colorCollection.find({},{"_id":0,"Hex":1}))
-		))
 			
 	@commands.Cog.listener()
 	async def on_member_join(self, member: discord.Member):
