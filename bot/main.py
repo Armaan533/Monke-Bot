@@ -26,7 +26,7 @@ def get_prefix(client, message: discord.Message):
 
 class MyHelp(commands.HelpCommand):
 	def get_command_signature(self, command):
-			return '%s%s %s' % (self.clean_prefix, command.qualified_name, command.signature)
+			return '%s%s %s' % (self.context.clean_prefix, command.qualified_name, command.signature)
 
 	async def send_bot_help(self, mapping):
 
@@ -43,7 +43,7 @@ class MyHelp(commands.HelpCommand):
 		# helpEmbed.add_field(name="`invite`", value="Gives an invite link of bot| Utility\n Aliases | invitebot", inline=True)
 		# helpEmbed.add_field(name="`nuke`", value="Deletes messages in bulk| Mod\n Aliases | None", inline=True)
 		# helpEmbed.add_field(name = "`prefix`", value = "Changes the prefix of bot to desired prefix| Utility\n Aliases | None")
-		helpEmbed.set_footer(text=f"Requested by {self.context.author.name} | Use {self.clean_prefix}help <command> to get more info about the command", icon_url = self.context.author.avatar_url)
+		helpEmbed.set_footer(text=f"Requested by {self.context.author.name} | Use {self.context.clean_prefix}help <command> to get more info about the command", icon_url = self.context.author.avatar_url)
 
 		for cog, commands in mapping.items():
 			filtered = await self.filter_commands(commands, sort=True)
