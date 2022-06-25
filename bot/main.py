@@ -5,7 +5,7 @@ from discord import app_commands
 from discord.ext import commands
 import logical_definitions as lgd
 import mongo_declaration as mn
-import sys
+import sys, traceback
 
 
 intent = discord.Intents.default()
@@ -226,6 +226,19 @@ async def invite(ctx):
 								color = lgd.hexConvertor(mn.colorCollection.find({},{"_id":0,"Hex":1})))
 	await ctx.send(embed = inviteEmbed)
 
+@client.event
+async def on_command_error(ctx, error):
+	if isinstance(error, commands.CommandNotFound):
+		unknownEmbed = discord.Embed(
+			title = "Command not found",
+			description = "What command are you trying to use?\n``Protip:`` Use ``!help`` to see all the available commands!", 
+			color = 0xf08080
+			)
+		await ctx.send(embed = unknownEmbed)
+
+	else:
+		print('Ignoring exception in command {}:'.format(ctx.command), file=sys.stderr)
+		traceback.print_exception(type(error), error, error.__traceback__, file=sys.stderr)
 
 
 @client.listen("on_message")
