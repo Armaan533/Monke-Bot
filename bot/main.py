@@ -1,11 +1,12 @@
 import asyncio
 import os
 import discord
-from discord import app_commands
-from discord.ext import commands
+from discord import app_commands, ui
+from discord.ext import commands, menus
 import logical_definitions as lgd
 import mongo_declaration as mn
 import sys, traceback
+from itertools import starmap
 
 
 intent = discord.Intents.default()
@@ -24,36 +25,133 @@ def get_prefix(client, message: discord.Message):
 	return commands.when_mentioned_or(Gprefix)(client, message)
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+class MyMenuPages(ui.View, menus.MenuPages):
+    def __init__(self, source, *, delete_message_after=False):
+        super().__init__(timeout=60)
+        self._source = source
+        self.current_page = 0
+        self.ctx = None
+        self.message = None
+        self.delete_message_after = delete_message_after
+
+    async def start(self, ctx, *, channel=None, wait=False):
+        # We wont be using wait/channel, you can implement them yourself. This is to match the MenuPages signature.
+        await self._source._prepare_once()
+        self.ctx = ctx
+        self.message = await self.send_initial_message(ctx, ctx.channel)
+
+    async def _get_kwargs_from_page(self, page):
+        """This method calls ListPageSource.format_page class"""
+        value = await super()._get_kwargs_from_page(page)
+        if 'view' not in value:
+            value.update({'view': self})
+        return value
+
+    async def interaction_check(self, interaction):
+        """Only allow the author that invoke the command to be able to use the interaction"""
+        return interaction.user == self.ctx.author
+
+    @ui.button(emoji='<:before_fast_check:754948796139569224>', style=discord.ButtonStyle.blurple)
+    async def first_page(self, button, interaction):
+        await self.show_page(0)
+
+    @ui.button(emoji='<:before_check:754948796487565332>', style=discord.ButtonStyle.blurple)
+    async def before_page(self, button, interaction):
+        await self.show_checked_page(self.current_page - 1)
+
+    @ui.button(emoji='<:stop_check:754948796365930517>', style=discord.ButtonStyle.blurple)
+    async def stop_page(self, button, interaction):
+        self.stop()
+        if self.delete_message_after:
+            await self.message.delete(delay=0)
+
+    @ui.button(emoji='<:next_check:754948796361736213>', style=discord.ButtonStyle.blurple)
+    async def next_page(self, button, interaction):
+        await self.show_checked_page(self.current_page + 1)
+
+    @ui.button(emoji='<:next_fast_check:754948796391227442>', style=discord.ButtonStyle.blurple)
+    async def last_page(self, button, interaction):
+        await self.show_page(self._source.get_max_pages() - 1)
+
+
+
+
+
+
+
+
+class HelpPageSource(menus.ListPageSource):
+    def __init__(self, data, helpcommand):
+        super().__init__(data, per_page=6)
+        self.helpcommand = helpcommand
+
+    def format_command_help(self, no, command):
+        signature = self.helpcommand.get_command_signature(command)
+        docs = self.helpcommand.get_command_brief(command)
+        return f"{no}. {signature}\n{docs}"
+    
+    async def format_page(self, menu, entries):
+        page = menu.current_page
+        max_page = self.get_max_pages()
+        starting_number = page * self.per_page + 1
+        iterator = starmap(self.format_command_help, enumerate(entries, start=starting_number))
+        page_content = "\n".join(iterator)
+        embed = discord.Embed(
+            title=f"Help Command[{page + 1}/{max_page}]", 
+            description=page_content,
+            color=lgd.hexConvertor(mn.colorCollection.find({},{"_id":0,"Hex":1}))
+        )
+        author = menu.ctx.author
+        embed.set_footer(text=f"Requested by {author.name}#{author.disciminator}", icon_url=author.display_avatar.url)  # author.avatar in 2.0
+        return embed
+
+
 class MyHelp(commands.HelpCommand):
 	def get_command_signature(self, command):
 			return '%s%s %s' % (self.context.clean_prefix, command.qualified_name, command.signature)
 
+
 	async def send_bot_help(self, mapping):
-
-		helpEmbed = discord.Embed(title = "Commands",
-							  color = lgd.hexConvertor(mn.colorCollection.find({},{"_id":0,"Hex":1})))
-
-	#	Add more commands here
-
-		# helpEmbed.add_field(name="`ping`", value="Shows the latency of the bot | Utility\n Aliases | pong", inline=True)
-		# helpEmbed.add_field(name="`purge`", value="Deletes a specified number of messages | Utility\n Aliases | None", inline=True)
-		# helpEmbed.add_field(name="`ban`", value="Bans a member  | Mod\n Aliases | None", inline=True)
-		# helpEmbed.add_field(name="`unban`", value="Unbans a member  | Mod\n Aliases | None", inline=True)
-		# helpEmbed.add_field(name="`say`", value="Make bot say something for you| Utility\n Aliases | None", inline=True)
-		# helpEmbed.add_field(name="`invite`", value="Gives an invite link of bot| Utility\n Aliases | invitebot", inline=True)
-		# helpEmbed.add_field(name="`nuke`", value="Deletes messages in bulk| Mod\n Aliases | None", inline=True)
-		# helpEmbed.add_field(name = "`prefix`", value = "Changes the prefix of bot to desired prefix| Utility\n Aliases | None")
-		helpEmbed.set_footer(text=f"Requested by {self.context.author.name} | Use {self.context.clean_prefix}help <command> to get more info about the command", icon_url = self.context.author.display_avatar.url)
-
-		for cog, commands in mapping.items():
-			filtered = await self.filter_commands(commands, sort=True)
-			command_signatures = [self.get_command_signature(c) for c in filtered]
-			if command_signatures:
-				cog_name = getattr(cog, "qualified_name", "Bot-related")
-				helpEmbed.add_field(name=cog_name, value="\n".join(command_signatures), inline=False)
 		
-		print("stuff works")
-		await self.context.reply(embed = helpEmbed)
+		filtered = []
+
+		for commands in mapping.items():
+			filtered = await self.filter_commands(commands, sort=True)
+
+		formatter = HelpPageSource(filtered, self)
+		menu = MyMenuPages(formatter, delete_message_after=True)
+		await menu.start(self.context)
+
+			# command_signatures = [self.get_command_signature(c) for c in filtered]
+
+
+		# 	if command_signatures:
+		# 		cog_name = getattr(cog, "qualified_name", "Bot-related")
+		# 		helpEmbed.add_field(name=cog_name, value="\n".join(command_signatures), inline=False)
+		
+		# await self.context.reply(embed = helpEmbed)
 
 	async def send_command_help(self, command):
 		helpCommandEmbed = discord.Embed(
@@ -66,6 +164,10 @@ class MyHelp(commands.HelpCommand):
 			helpCommandEmbed.add_field(name="Aliases", value=", ".join(alias), inline=False)
 		
 		await self.context.reply(embed = helpCommandEmbed)
+
+
+
+
 
 
 class MyClient(commands.Bot):
@@ -84,10 +186,15 @@ class MyClient(commands.Bot):
 		await self.load_extension("cogs.admin")
 
 
+
 # Creating a bot instance
 client = MyClient()
 
+# Connects the help command class as the main help command of the bot
 client.help_command = MyHelp()
+
+
+
 
 # this will get called when bot joins a guild
 
