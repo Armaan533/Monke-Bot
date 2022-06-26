@@ -124,7 +124,7 @@ class HelpPageSource(menus.ListPageSource):
             color=lgd.hexConvertor(mn.colorCollection.find({},{"_id":0,"Hex":1}))
         )
         author = menu.ctx.author
-        embed.set_footer(text=f"Requested by {author.name}#{author.disciminator}", icon_url=author.display_avatar.url)  # author.avatar in 2.0
+        embed.set_footer(text=f"Requested by {author.name}#{author.discriminator}", icon_url=author.display_avatar.url)  # author.avatar in 2.0
         return embed
 
 
