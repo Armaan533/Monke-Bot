@@ -132,6 +132,8 @@ class MyHelp(commands.HelpCommand):
 	def get_command_signature(self, command):
 			return '%s%s %s' % (self.context.clean_prefix, command.qualified_name, command.signature)
 
+	def get_command_brief(self, command):
+		return command.short_doc or "Command is not documented."
 
 	async def send_bot_help(self, mapping):
 		
