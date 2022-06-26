@@ -137,7 +137,7 @@ class MyHelp(commands.HelpCommand):
 		
 		filtered = []
 
-		for commands in mapping.items():
+		for _, commands in mapping.items():
 			filtered = await self.filter_commands(commands, sort=True)
 
 		formatter = HelpPageSource(filtered, self)
