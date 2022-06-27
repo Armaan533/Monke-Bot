@@ -7,7 +7,10 @@ import logical_definitions as lgd
 import mongo_declaration as mn
 import sys, traceback
 from itertools import starmap
+import logging
 
+
+logging.basicConfig(level = logging.INFO)
 
 intent = discord.Intents.default()
 intent.members = True
