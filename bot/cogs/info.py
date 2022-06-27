@@ -131,7 +131,7 @@ class Info(commands.Cog):
 
             userinfoEmbed.add_field(
                 name = "Joined at",
-                value = f"<t:{int(joinTimestamp)}:F>",
+                value = f"<t:{int(joinTimestamp//1)}:F>",
                 inline = True
             )
 
@@ -139,7 +139,7 @@ class Info(commands.Cog):
             createTimestamp = datetime.datetime.timestamp(creationDateTime)
             userinfoEmbed.add_field(
                 name = "Created at",
-                value = f"<t:{int(createTimestamp)}:F>",
+                value = f"<t:{int(createTimestamp//1)}:F>",
                 inline = True
             )
             roleMention = ""
@@ -156,7 +156,7 @@ class Info(commands.Cog):
                 inline = False
             )
 
-            userinfoEmbed.set_thumbnail(url = user.avatar_url)
-            userinfoEmbed.set_footer(text = f"Requested by {ctx.author.name}", icon_url = ctx.author.avatar_url)
+            userinfoEmbed.set_thumbnail(url = user.display_avatar.url)
+            userinfoEmbed.set_footer(text = f"Requested by {ctx.author.name}", icon_url = ctx.author.display_avatar.url)
 
             await ctx.send(embed = userinfoEmbed)

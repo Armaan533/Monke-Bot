@@ -18,8 +18,9 @@ class Logs(commands.Cog):
 			logChannel = discord.utils.get(member.guild.text_channels, id = int(mn.guildpref.find_one({"_id": str(member.guild.id)},{"_id":0,"Logs":1})["Logs"]))
 			memberjoinLogEmbed = discord.Embed(
 				title = "**Member Joined**",
-				description = f"{member.mention} joined\n**Account Creation**\n<t:{int(createtimestamp)}:F>",
-				timestamp = discord.utils.utcnow()
+				description = f"{member.mention} joined\n**Account Creation**\n <t:{int(createtimestamp//1)}:F>",
+				timestamp = discord.utils.utcnow(),
+				color = lgd.hexConvertor(mn.colorCollection.find({},{"_id":0,"Hex":1}))
 			)
 			memberjoinLogEmbed.set_footer(text = "\u200b")
 			await logChannel.send(embed = memberjoinLogEmbed)
