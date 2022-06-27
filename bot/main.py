@@ -74,35 +74,31 @@ class MyMenuPages(ui.View, menus.MenuPages):
 		return interaction.user == self.ctx.author
 
 	@ui.button(emoji='<:before_fast_check:754948796139569224>', style=discord.ButtonStyle.blurple)
-	async def first_page(self, button, interaction):
+	async def first_page(self, interaction, button):
 		await self.show_page(0)
 		await interaction.response.defer()
-		print("before fast defer works")
 
 	@ui.button(emoji='<:before_check:754948796487565332>', style=discord.ButtonStyle.blurple)
-	async def before_page(self, button, interaction):
+	async def before_page(self, interaction, button):
 		await self.show_checked_page(self.current_page - 1)
 		await interaction.response.defer()
-		print("before defer works")
 
 	@ui.button(emoji='<:stop_check:754948796365930517>', style=discord.ButtonStyle.blurple)
-	async def stop_page(self, button, interaction):
+	async def stop_page(self, interaction, button):
 		self.stop()
 		if self.delete_message_after:
 			await self.message.delete(delay=0)
 		await interaction.response.defer()
 
 	@ui.button(emoji='<:next_check:754948796361736213>', style=discord.ButtonStyle.blurple)
-	async def next_page(self, button, interaction):
+	async def next_page(self, interaction, button):
 		await self.show_checked_page(self.current_page + 1)
 		await interaction.response.defer()
-		print("next defer works")
 
 	@ui.button(emoji='<:next_fast_check:754948796391227442>', style=discord.ButtonStyle.blurple)
-	async def last_page(self, button, interaction):
+	async def last_page(self, interaction, button):
 		await self.show_page(self._source.get_max_pages() - 1)
 		await interaction.response.defer()
-		print("next fast defer works")
 
 
 
