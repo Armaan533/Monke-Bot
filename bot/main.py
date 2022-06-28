@@ -322,7 +322,6 @@ async def say(ctx: commands.Context, *, message = None):
 
 	else:
 		me2 = discord.Embed(
-			title = f"{ctx.author.name}#{ctx.author.discriminator}",
 			description = f"{message}",
 			color = lgd.hexConvertor(mn.colorCollection.find({},{"_id":0,"Hex":1})),
 			timestamp = discord.utils.utcnow()
