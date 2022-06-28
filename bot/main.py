@@ -308,7 +308,7 @@ async def ping(ctx):
 	await ctx.send(embed=pingem)
 
 @client.command(help = "Fun command used for impersonating as bot. :warning: Warning :warning: Do NOT use this for bad stuff")
-async def say(ctx, *, message = None):
+async def say(ctx: commands.Context, *, message = None):
 
 	if message == None:
 		e1 = discord.Embed(description = 'Please provide a message!',
@@ -318,17 +318,21 @@ async def say(ctx, *, message = None):
 
 # to prevent misuse of say command
 	elif "@everyone" in message:
-		if lgd.permscheck(ctx):
-			me2 = discord.Embed(description = f"{message}",
-								color = lgd.hexConvertor(mn.colorCollection.find({},{"_id":0,"Hex":1})))
-			await ctx.message.delete()
-			await ctx.send(embed = me2)
-		else:
-			await ctx.send("Sorry you can't send the above message because you don't have administrator permission")
+		await ctx.send("Sorry you can't send the above message because it contains everyone ping")
 
 	else:
-		me2 = discord.Embed(description = f"{message}",
-							color = lgd.hexConvertor(mn.colorCollection.find({},{"_id":0,"Hex":1})))
+		me2 = discord.Embed(
+			title = f"{ctx.author.name}#{ctx.author.discriminator}",
+			description = f"{message}",
+			color = lgd.hexConvertor(mn.colorCollection.find({},{"_id":0,"Hex":1})),
+			timestamp = discord.utils.utcnow()
+			)
+		me2.set_author(
+			name = ctx.author.name,
+			icon_url = ctx.author.display_icon.url
+		)
+		me2.set_footer(text = "Powered by Monke Bot", icon_url = client.user.avatar.url)
+
 		await ctx.message.delete()
 		await ctx.send(embed = me2)
 
