@@ -329,7 +329,7 @@ async def say(ctx: commands.Context, *, message = None):
 			)
 		me2.set_author(
 			name = ctx.author.name,
-			icon_url = ctx.author.display_icon.url
+			icon_url = ctx.author.display_avatar.url
 		)
 		me2.set_footer(text = "Powered by Monke Bot", icon_url = client.user.avatar.url)
 
