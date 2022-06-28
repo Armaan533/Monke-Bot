@@ -37,6 +37,14 @@ class Admin(commands.Cog):
         if (member.guild_permissions.administrator) or (member == ctx.guild.owner):
             await ctx.reply(f"I cannot warn {member.mention} because they have administrator permissions")
         
+        elif member.top_role > ctx.author.top_role:
+            higherheirarchyEmbed = discord.Embed(
+                title = "",
+                description = f"You cannot warn {member.mention} because they have higher role than you",
+                color = lgd.hexConvertor(mn.colorCollection.find({},{"_id":0,"Hex":1}))
+            )
+            await ctx.reply(embed = higherheirarchyEmbed)
+
         elif ctx.author.id == member.id:
             samePersonEmbed = discord.Embed(
                 title = "",
