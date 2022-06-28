@@ -194,10 +194,16 @@ class Admin(commands.Cog):
 
     @commands.command(help = "For deleting the mentioned amount of messages")
     @commands.has_guild_permissions(manage_messages = True)
-    async def purge(self, ctx, limit: int):
+    async def purge(self, ctx: commands.Context, limit: int, type: str = None):
         await ctx.message.delete()
-        await ctx.channel.purge(limit=limit)
-
+        if type == None:
+            await ctx.channel.purge(limit=limit, reason = f"{ctx.author.name}#{ctx.author.discriminator} purged messages sent by users and bots")
+        elif type.lower() in ["bot","bots"]:
+            botcheck = lambda m: m.author.bot == True
+            await ctx.channel.purge(limit = limit, check = botcheck, reason = f"{ctx.author.display_name}#{ctx.author.discriminator} purged messages sent by bots")
+        elif type.lower() in ["user","users","members","member"]:
+            usercheck = lambda m: m.author.bot == False
+            await ctx.channel.purge(limit = limit, check = usercheck, reason = f"{ctx.author.display_name}#{ctx.author.discriminator} purged messages sent by users")
     @purge.error
     async def purge_error(ctx, error):
         if isinstance(error, commands.MissingPermissions):
