@@ -21,11 +21,18 @@ class Steal(commands.Cog):
         else:
             emojibytes = await emoji.read()
             newemoji = await ctx.guild.create_custom_emoji(name = emoji.name, image = emojibytes, reason = f"Emoji added by {ctx.author.name}#{ctx.author.discriminator}")
-            successfulEmbed = discord.Embed(
-                title = "",
-                description = f"Emoji :{newemoji.name}: added successfully",
-                color = lgd.hexConvertor(mn.colorCollection.find({},{"_id":0,"Hex":1}))
-            )
+            if newemoji.animated:
+                successfulEmbed = discord.Embed(
+                    title = "",
+                    description = f"Emoji <a:{newemoji.name}:{newemoji.id}> added successfully",
+                    color = lgd.hexConvertor(mn.colorCollection.find({},{"_id":0,"Hex":1}))
+                )
+            else:
+                successfulEmbed = discord.Embed(
+                    title = "",
+                    description = f"Emoji <:{newemoji.name}:{newemoji.id}> added successfully",
+                    color = lgd.hexConvertor(mn.colorCollection.find({},{"_id":0,"Hex":1}))
+                )
             await ctx.send(embed = successfulEmbed)
     
     @steal.error
