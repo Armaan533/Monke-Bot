@@ -9,7 +9,7 @@ class Steal(commands.Cog):
         self.client = client
 
     @commands.command()
-    async def steal(self, ctx: commands.Context, emoji: discord.Emoji):
+    async def steal(self, ctx: commands.Context, emoji: discord.PartialEmoji):
         if ctx.guild.emoji_limit == len(ctx.guild.emojis):
             emojiFullEmbed = discord.Embed(
                 title = "No emoji slots available",
@@ -19,7 +19,7 @@ class Steal(commands.Cog):
             await ctx.send(embed = emojiFullEmbed)
 
         else:
-            emojibytes = emoji.url.read()
+            emojibytes = await emoji.read()
             newemoji = await ctx.guild.create_custom_emoji(name = emoji.name, image = emojibytes, reason = f"Emoji added by {ctx.author.name}#{ctx.author.discriminator}")
             successfulEmbed = discord.Embed(
                 title = "",
