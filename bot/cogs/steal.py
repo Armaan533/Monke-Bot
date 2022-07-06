@@ -36,3 +36,6 @@ class Steal(commands.Cog):
                 color = lgd.hexConvertor(mn.colorCollection.find({},{"_id":1,"Hex":1}))
             )
             await ctx.send(noBotPermsEmbed)
+
+async def setup(client):
+    await client.add_cog(Steal(client))
