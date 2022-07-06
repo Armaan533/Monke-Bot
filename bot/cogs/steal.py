@@ -2,6 +2,7 @@ import discord
 from discord.ext import commands
 import logical_definitions as lgd
 import mongo_declaration as mn
+import traceback, sys
 
 class Steal(commands.Cog):
     def __init__(self, client):
@@ -36,6 +37,9 @@ class Steal(commands.Cog):
                 color = lgd.hexConvertor(mn.colorCollection.find({},{"_id":1,"Hex":1}))
             )
             await ctx.send(noBotPermsEmbed)
+        else:
+            print('Ignoring exception in command {}:'.format(ctx.command), file=sys.stderr)
+            traceback.print_exception(type(error), error, error.__traceback__, file=sys.stderr)
 
 async def setup(client):
     await client.add_cog(Steal(client))

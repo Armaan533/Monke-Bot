@@ -346,20 +346,6 @@ async def invite(ctx):
 								color = lgd.hexConvertor(mn.colorCollection.find({},{"_id":0,"Hex":1})))
 	await ctx.send(embed = inviteEmbed)
 
-@client.event
-async def on_command_error(ctx, error):
-	if isinstance(error, commands.CommandNotFound):
-		unknownEmbed = discord.Embed(
-			title = "Command not found",
-			description = "What command are you trying to use?\n``Protip:`` Use ``!help`` to see all the available commands!", 
-			color = 0xf08080
-			)
-		await ctx.send(embed = unknownEmbed)
-
-	else:
-		print('Ignoring exception in command {}:'.format(ctx.command), file=sys.stderr)
-		traceback.print_exception(type(error), error, error.__traceback__, file=sys.stderr)
-
 
 @client.listen("on_message")
 async def on_message(message):
