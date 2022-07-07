@@ -14,7 +14,7 @@ class Steal(commands.Cog):
             emojiFullEmbed = discord.Embed(
                 title = "No emoji slots available",
                 description = "Hey, if you wanna add more emojis to the server\nthen please consider boosting the server\nor remove any useless ones",
-                color = lgd.hexConvertor(mn.colorCollection.find({},{"_id":0,"Hex":1}))
+                color = 0x000000
             )
             await ctx.send(embed = emojiFullEmbed)
 
@@ -25,13 +25,13 @@ class Steal(commands.Cog):
                 successfulEmbed = discord.Embed(
                     title = "",
                     description = f"Emoji <a:{newemoji.name}:{newemoji.id}> added successfully",
-                    color = lgd.hexConvertor(mn.colorCollection.find({},{"_id":0,"Hex":1}))
+                    color = 0x000000
                 )
             else:
                 successfulEmbed = discord.Embed(
                     title = "",
                     description = f"Emoji <:{newemoji.name}:{newemoji.id}> added successfully",
-                    color = lgd.hexConvertor(mn.colorCollection.find({},{"_id":0,"Hex":1}))
+                    color = 0x000000
                 )
             await ctx.send(embed = successfulEmbed)
     
@@ -44,6 +44,13 @@ class Steal(commands.Cog):
                 color = lgd.hexConvertor(mn.colorCollection.find({},{"_id":1,"Hex":1}))
             )
             await ctx.send(noBotPermsEmbed)
+        elif isinstance(error, commands.errors.PartialEmojiConversionFailure):
+            defaultemojiEmbed = discord.Embed(
+                title = "",
+                description = "You can't steal default emojis because they are default ||obviously||",
+                color = 0x000000
+            )
+            await ctx.send(embed = defaultemojiEmbed)
         else:
             print('Ignoring exception in command {}:'.format(ctx.command), file=sys.stderr)
             traceback.print_exception(type(error), error, error.__traceback__, file=sys.stderr)

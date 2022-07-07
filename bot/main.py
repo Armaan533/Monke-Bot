@@ -128,7 +128,7 @@ class HelpPageSource(menus.ListPageSource):
         embed = discord.Embed(
             title=f"Help Command[{page + 1}/{max_page}]", 
             description=page_content,
-            color=lgd.hexConvertor(mn.colorCollection.find({},{"_id":0,"Hex":1}))
+            color=0x000000
         )
         author = menu.ctx.author
         embed.set_footer(text=f"Requested by {author.name}#{author.discriminator}", icon_url=author.display_avatar.url)  # author.avatar in 2.0
@@ -165,7 +165,7 @@ class MyHelp(commands.HelpCommand):
 	async def send_command_help(self, command):
 		helpCommandEmbed = discord.Embed(
 			title = "Command Help",
-			color = lgd.hexConvertor(mn.colorCollection.find({},{"_id":0,"Hex":1}))
+			color = 0x000000
 		)
 		helpCommandEmbed.add_field(name="Help", value=command.help)
 		alias = command.aliases
@@ -193,6 +193,7 @@ class MyClient(commands.Bot):
 		await self.load_extension("cogs.logs")
 		await self.load_extension("cogs.info")
 		await self.load_extension("cogs.admin")
+		await self.load_extension("cogs.steal")
 
 
 
@@ -229,7 +230,7 @@ async def on_member_join(member: discord.Member):
 		else:
 			role = discord.utils.get(member.guild.roles, name = "Soul Reapers")
 			WelcomeEmbed = discord.Embed(description = f"Hey {member.mention},\nWelcome to Paradise!!\nWe hope you have a great stay in our server",
-										color = lgd.hexConvertor(mn.colorCollection.find({},{"_id":0,"Hex":1})))
+										color = 0x000000)
 			channel = discord.utils.get(member.guild.text_channels,id = 967822342459904051)
 			ping = await channel.send(member.mention)
 			await ping.delete()
@@ -247,14 +248,14 @@ async def prefix(ctx, newPrefix: str):
 	if len(newPrefix) >= 5:
 		await ctx.send(embed = discord.embed(title = "Prefix too long.",
 											 description = "Please choose a shorter prefix!\nMaximum length of Prefix is 5 characters.",
-											 color = lgd.hexConvertor(iterator = mn.colorCollection.find({},{"_id":0,"Hex":1}))))
+											 color = 0x000000))
 	else:
 		prev = {"_id":str(ctx.guild.id)} 
 		next = {"$set":{"Prefix": newPrefix}}
 		mn.guildpref.update_one(prev, next)
 		prefixSuccess = discord.Embed(title = "Prefix changed!",
 									  description = f"Prefix changed successfully to ``{newPrefix}``",
-									  color = lgd.hexConvertor(mn.colorCollection.find({},{"_id":0,"Hex":1})))
+									  color = 0x000000)
 		await ctx.send(embed = prefixSuccess)
 
 @prefix.error
@@ -263,14 +264,14 @@ async def prefix_error(ctx: commands.Context, error: commands.errors):
 		missingPermsEmbed = discord.Embed(
 			title = "Hold Up!",
 			description = "You need ``Administrator`` Permissions to use this command!",
-			color = lgd.hexConvertor(iterator = mn.colorCollection.find({},{"_id":0,"Hex":1}))
+			color = 0x000000
 		)
 		await ctx.send(embed = missingPermsEmbed , delete_after = 20)
 	elif isinstance(error, commands.MissingRequiredArgument):
 		missingArgEmbed = discord.Embed(
 			title = "Prefix needed",
 			description = "You need to give prefix with command\n For example:- ``+prefix {newprefix}\n Put the new prefix in place of {newprefix}``",
-			color = lgd.hexConvertor(iterator = mn.colorCollection.find({},{"_id":0,"Hex":1}))
+			color = 0x000000
 		)
 		await ctx.send(embed = missingArgEmbed)
 
@@ -307,7 +308,7 @@ async def disable(ctx,*, cogname = None):
 @client.command(help = "For checking the latensy of bot", aliases = ["pong"])
 async def ping(ctx):
 	pingem = discord.Embed(description = f"Pong! In {round(client.latency * 1000)}ms",
-						   color = lgd.hexConvertor(mn.colorCollection.find({},{"_id":0,"Hex":1})))
+						   color = 0x000000)
 	await ctx.send(embed=pingem)
 
 @client.command(help = "Fun command used for impersonating as bot. :warning: Warning :warning: Do NOT use this for bad stuff")
@@ -315,7 +316,7 @@ async def say(ctx: commands.Context, *, message = None):
 
 	if message == None:
 		e1 = discord.Embed(description = 'Please provide a message!',
-						   color = lgd.hexConvertor(mn.colorCollection.find({},{"_id":0,"Hex":1})))
+						   color = 0x000000)
 		await ctx.send(embed=e1)
 		return
 
@@ -326,7 +327,7 @@ async def say(ctx: commands.Context, *, message = None):
 	else:
 		me2 = discord.Embed(
 			description = f"{message}",
-			color = lgd.hexConvertor(mn.colorCollection.find({},{"_id":0,"Hex":1})),
+			color = 0x000000,
 			timestamp = discord.utils.utcnow()
 			)
 		me2.set_author(
@@ -343,7 +344,7 @@ async def say(ctx: commands.Context, *, message = None):
 async def invite(ctx):
 	inviteEmbed = discord.Embed(title = "Invite bot!",
 								description = f"Click [here]({invlink}) to invite the bot",
-								color = lgd.hexConvertor(mn.colorCollection.find({},{"_id":0,"Hex":1})))
+								color = 0x000000)
 	await ctx.send(embed = inviteEmbed)
 
 
@@ -357,7 +358,7 @@ async def on_message(message):
 	    
 			mentionEmbed = discord.Embed(title = "Hello there :wave:",
 										 description = f"My prefix is `{gprefix}`",
-										 color = lgd.hexConvertor(mn.colorCollection.find({},{"_id":0,"Hex":1})))
+										 color = 0x000000)
 			await message.channel.send(embed = mentionEmbed)
 	
 

@@ -20,7 +20,7 @@ class Logs(commands.Cog):
 				title = "**Member Joined**",
 				description = f"{member.mention} joined\n**Account Creation**\n <t:{int(createtimestamp//1)}:F>",
 				timestamp = discord.utils.utcnow(),
-				color = lgd.hexConvertor(mn.colorCollection.find({},{"_id":0,"Hex":1}))
+				color = 0x000000
 			)
 			memberjoinLogEmbed.set_footer(text = "\u200b")
 			await logChannel.send(embed = memberjoinLogEmbed)
@@ -37,7 +37,7 @@ class Logs(commands.Cog):
 				title = "**Member Left**",
 				description = f"{member.mention} left",
 				timestamp = discord.utils.utcnow(),
-				color = lgd.hexConvertor(mn.colorCollection.find({},{"_id":0,"Hex":1}))
+				color = 0x000000
 			)
 			memberleaveLogEmbed.set_footer(text = "\u200b")
 			memberleaveLogEmbed.set_thumbnail(url = member.avatar_url)
@@ -65,7 +65,7 @@ class Logs(commands.Cog):
 					title = f"Message Deleted By {deleter.name}#{deleter.discriminator}",
 					description = "",
 					timestamp = discord.utils.utcnow(),
-					color = lgd.hexConvertor(mn.colorCollection.find({},{"_id":0,"Hex":1}))
+					color = 0x000000
 				)
 				cachemessagedeleteEmbed.set_footer(text = f"ID:{message.id}")
 
@@ -99,7 +99,7 @@ class Logs(commands.Cog):
 					title = "Message Deleted",
 					description = f"Message Content not available\nChannel: {msgchannel.mention}",
 					timestamp = discord.utils.utcnow(),
-					color = lgd.hexConvertor(mn.colorCollection.find({},{"_id":0, "Hex": 1}))
+					color = 0x000000
 				)
 				noCacheMessageDeleteEmbed.set_footer(text = f"ID: {payload.message_id}")
 
