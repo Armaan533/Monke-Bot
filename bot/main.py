@@ -1,7 +1,7 @@
 import asyncio
 import os
 import discord
-from discord import app_commands, ui
+from discord import RawMemberRemoveEvent, app_commands, ui
 from discord.ext import commands, menus
 import logical_definitions as lgd
 import mongo_declaration as mn
@@ -237,8 +237,20 @@ async def on_member_join(member: discord.Member):
 			await channel.send(embed = WelcomeEmbed)
 		await member.add_roles(role)
 
-# new, upgraded and personalized help command
+@client.event
+async def on_raw_member_remove(payload: RawMemberRemoveEvent):
+	if payload.guild_id == 965285949447753769:
+		leaveEmbed = discord.Embed(
+			description = f"{payload.user.name}#{payload.user.id} just left the server",
+			color = 0x000000
+		)
+		guild = discord.utils.get(client.guilds, id = payload.guild_id)
+		channel = discord.utils.get(guild.text_channels, id = 996070541410697246)
+		
+		await channel.send(embed = leaveEmbed)
 
+
+# new, upgraded and personalized help command
 
 
 @client.command(help = "Changes the prefix of the bot for this guild")
