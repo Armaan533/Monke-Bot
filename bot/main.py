@@ -241,9 +241,10 @@ async def on_member_join(member: discord.Member):
 async def on_raw_member_remove(payload: RawMemberRemoveEvent):
 	if payload.guild_id == 965285949447753769:
 		leaveEmbed = discord.Embed(
-			description = f"{payload.user.name}#{payload.user.id} just left the server",
+			description = f"{payload.user.name}#{payload.user.discriminator} just left the server",
 			color = 0x000000
 		)
+		leaveEmbed.set_thumbnail(url = payload.user.default_avatar.url)
 		guild = discord.utils.get(client.guilds, id = payload.guild_id)
 		channel = discord.utils.get(guild.text_channels, id = 996070541410697246)
 		
