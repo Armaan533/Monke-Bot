@@ -244,7 +244,6 @@ async def on_raw_member_remove(payload: RawMemberRemoveEvent):
 			description = f"{payload.user.name}#{payload.user.discriminator} just left the server",
 			color = 0x000000
 		)
-		leaveEmbed.set_thumbnail(url = payload.user.default_avatar.url)
 		guild = discord.utils.get(client.guilds, id = payload.guild_id)
 		channel = discord.utils.get(guild.text_channels, id = 996070541410697246)
 		
