@@ -8,6 +8,7 @@ import mongo_declaration as mn
 import sys, traceback
 from itertools import starmap
 import logging
+import bot_token
 
 
 logging.basicConfig(level = logging.INFO)
@@ -368,7 +369,7 @@ async def on_message(message):
 	
 
 async def start():
-	await client.start(os.environ.get('token'))
+	await client.start(bot_token.token)
 	
 
 asyncio.run(start())
