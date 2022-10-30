@@ -9,7 +9,8 @@ COPY requirements.txt requirements.txt
 RUN apt-get update && \
     apt-get upgrade -y && \
     apt-get install -y git && \
-    apt-get install gcc
+    apt-get install gcc && \
+    y
 
 RUN pip3 install -r requirements.txt
 
