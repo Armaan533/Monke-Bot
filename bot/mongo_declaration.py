@@ -1,4 +1,6 @@
-import os, pymongo
+import pymongo
+import bot_token
+
 # from pathlib import Path
 
 # current = Path(os.getcwd())
@@ -7,7 +9,7 @@ import os, pymongo
 # if ".replit" in parentFiles:
 #     dbase = pymongo.MongoClient(os.getenv('mongo_db_link'),serverSelectionTimeoutMs = 5000)
 # else:
-dbase = pymongo.MongoClient(os.environ.get('mongo_db_link'),serverSelectionTimeoutMs = 5000)
+dbase = pymongo.MongoClient(bot_token.mongo_db_link, serverSelectionTimeoutMs = 5000)
 
 botdbase = dbase["Bot_Database"]
 guildpref = botdbase["Guild Preference"]
