@@ -245,8 +245,6 @@ async def on_raw_member_remove(payload: RawMemberRemoveEvent):
 		await channel.send(embed = leaveEmbed)
 
 
-# new, upgraded and personalized help command
-
 
 @client.command(help = "Changes the prefix of the bot for this guild")
 @commands.guild_only()
