@@ -18,7 +18,7 @@ class Info(commands.Cog):
         serverInfoEmbed = discord.Embed(
             title = guild.name,
             timestamp = guild.created_at,
-            color = lgd.hexConvertor(mn.colorCollection.find({},{"_id":0,"Hex":1}))
+            color = 0x000000
         )
         serverInfoEmbed.set_thumbnail(url = guild.icon.url)
         serverInfoEmbed.set_footer(text = f"Requested By {ctx.author.name} | Server Created On", icon_url = ctx.author.display_avatar.url)
@@ -123,7 +123,7 @@ class Info(commands.Cog):
         else:
             userinfoEmbed = discord.Embed(
                 title = user.name + "#" + user.discriminator,
-                color = lgd.hexConvertor(mn.colorCollection.find({},{"_id": 0, "Hex": 1}))
+                color = 0x000000
             )
 
             joiningDateTime = user.joined_at
