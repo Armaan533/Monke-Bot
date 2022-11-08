@@ -227,8 +227,10 @@ async def on_ready():
 async def on_member_join(member: discord.Member):
 	if member.guild.id == 965285949447753769:
 		role = discord.utils.get(member.guild.roles, name = "Soul Reapers")
-		WelcomeEmbed = discord.Embed(description = f"Hey {member.mention},\nWelcome to Paradise!!\nWe hope you have a great stay in our server",
-									color = 0x000000)
+		WelcomeEmbed = discord.Embed(description = f"""⪩⪨﹒`🌾`﹒—﹒**welcome to the Paradise, {member.mention}**
+︴✸﹒`🍄`﹒␥﹒please visit #📎self-roles & #🎞rules
+﹑`🧺`﹒〇﹒➔﹒enjoy your stay !""",
+									color = 0x5a515f)
 		channel = discord.utils.get(member.guild.text_channels,id = 967822342459904051)
 		await channel.send(content = f"|| {member.mention} ||",embed = WelcomeEmbed)
 		await member.add_roles(role)
